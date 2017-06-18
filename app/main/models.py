@@ -13,6 +13,16 @@ def retrieveUsers():
     return users
 
 
+def registerUser(name, password):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("INSERT INTO Users (username,password) VALUES (?,?)",
+                (name, password))
+    con.commit()
+    con.close()
+    print(name, password)
+
+
 def validateUser(name, password):
     con = sql.connect("database.db")
     cur = con.cursor()

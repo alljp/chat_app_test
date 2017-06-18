@@ -1,7 +1,7 @@
 from flask import session, redirect, url_for, render_template, request, flash
 from passlib.hash import sha256_crypt
 from . import main
-from .forms import LoginForm, ChatForm
+from .forms import LoginForm, ChatForm, RegistrationForm
 from .models import *
 
 
@@ -19,6 +19,22 @@ def login():
             session['name'] = name
             return redirect(url_for('.index'))
     return render_template('login.html', error=error)
+
+
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if request.method == 'POST':
+        print("Success")
+        name = str(form.username.data)
+        print("\n\n", form.username.data, form.password.data)
+        print(form)
+        password = sha256_crypt.encrypt((str(form.password.data)))
+        registerUser(name, password)
+        # session['logged_in'] = True
+        session['name'] = name
+        return redirect(url_for('.index'))
+    return render_template('register.html')
 
 
 @main.route('/chat', methods=['GET', 'POST'])

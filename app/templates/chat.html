@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <title>Chat App: {{ room }}</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+    let socket;
+    socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+    socket.on('connect', function() {
+        socket.emit('joined', {});
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+
+
+        socket.on('status', function(data) {
+            document.getElementById("chat").innerHTML += '<' + data.msg + '>\n';
+        });
+        socket.on('message', function(data) {
+            document.getElementById("chat").innerHTML += data.msg + '\n';
+        });
+
+        document.onkeydown = function(e) {
+            let code = e.keyCode;
+            if (code == 13) {
+                text = document.getElementById("text").value;
+                console.log("text", text);
+                document.getElementById("text").value = "";
+                socket.emit('text', {
+                    msg: text
+                });
+            }
+        };
+    });
+
+    function leave_room() {
+        socket.emit('left', {}, function() {
+            socket.disconnect();
+
+            window.location.href = "{{ url_for('main.index') }}";
+        });
+    }
+    </script>
+</head>
+
+<body>
+    <h1>Chat App: {{ room }}</h1>
+    <textarea id="chat" cols="80" rows="25" disabled></textarea>
+    <br>
+    <br>
+    <input id="text" size="80" placeholder="Enter your message here">
+    <br>
+    <br>
+    <a href="#" onclick="leave_room();">Leave this room</a>
+</body>
+
+</html>

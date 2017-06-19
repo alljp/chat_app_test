@@ -47,3 +47,23 @@ def retrieveRooms():
     for i in rooms:
         rooms_list.append(i[0])
     return rooms_list
+
+
+def storeMessage(msg, room):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("INSERT INTO History (message, room) VALUES (?,?)",
+                (msg, room))
+    con.commit()
+    con.close()
+
+
+def retrieveHistory(room):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("SELECT message FROM History WHERE room = ?", (room))
+    msgs = cur.fetchall()
+    msgs_list = []
+    for i in msgs:
+        msgs_list.append(i[0])
+    return msgs_list

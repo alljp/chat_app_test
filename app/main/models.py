@@ -36,3 +36,14 @@ def validateUser(name, password):
         print("\n\nsuccess")
         return True
     return False
+
+
+def retrieveRooms():
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("SELECT roomname FROM Rooms")
+    rooms = cur.fetchall()
+    rooms_list = []
+    for i in rooms:
+        rooms_list.append(i[0])
+    return rooms_list

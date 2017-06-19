@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, PasswordField, SubmitField
+from wtforms.fields import StringField, PasswordField, SelectField, SubmitField
 from wtforms import validators
 
 
@@ -10,12 +10,12 @@ class LoginForm(FlaskForm):
 
 
 class ChatForm(FlaskForm):
-    room = StringField('Room', [validators.Required()])
+    room = SelectField('Room', [validators.Required()], id='room')
     submit = SubmitField('Enter Chatroom')
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', [validators.Required()])
+    name = StringField('Name', [validators.Required()])
     password = PasswordField('New Password', [
         validators.Required(),
         validators.EqualTo('confirm', message='Passwords must match')

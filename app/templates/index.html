@@ -5,10 +5,18 @@
 </head>
 
 <body>
-    <h1>Chat App</h1>
+    <h1>Select Room</h1>
     <form method="POST">
-        <br> {{ form.room.label }}: {{ form.room() }} {% for error in form.room.errors %}{{ error }}{% endfor %}
-        <br> {{ form.submit() }}
+        <br>
+        <label>Select :</label>
+        <select name="room">
+            {% for i in rooms %}
+            <option value="{{ ix }}" {% if loop.first %} SELECTED{% endif %}>{{ i }}</option>
+            <script>
+            console.log("{{i}}");
+            </script>
+            {% endfor %}
+            <br> {{ form.submit() }}
     </form>
 </body>
 

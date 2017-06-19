@@ -26,8 +26,8 @@ def register():
     form = RegistrationForm()
     if request.method == 'POST':
         print("Success")
-        name = str(form.username.data)
-        print("\n\n", form.username.data, form.password.data)
+        name = form.name.data
+        print("\n\n", form.name.data, form.password.data)
         print(form)
         password = sha256_crypt.encrypt((str(form.password.data)))
         registerUser(name, password)
@@ -40,6 +40,8 @@ def register():
 @main.route('/chat', methods=['GET', 'POST'])
 def index():
     form = ChatForm()
+    rooms = retrieveRooms()
+    print(rooms)
     if session.get('name'):
         print(session['name'])
         if request.method == 'POST':
@@ -47,7 +49,7 @@ def index():
             return redirect(url_for('.chat', room=session['room']))
         if request.method == 'GET':
             form.room.data = ''
-            return render_template('index.html', form=form)
+            return render_template('index.html', form=form, rooms=rooms)
     return render_template('login.html', form=LoginForm)
 
 

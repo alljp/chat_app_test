@@ -9,14 +9,18 @@
     socket.on('connect', function() {
         socket.emit('joined', {});
     });
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
-
-
+        document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight
         socket.on('status', function(data) {
             document.getElementById("chat").innerHTML += '<' + data.msg + '>\n';
+            //document.getElementById("textarea").scrollTop = document.getElementById("chat").scrollHeight
         });
         socket.on('message', function(data) {
             document.getElementById("chat").innerHTML += data.msg + '\n';
+            //document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight
         });
 
         document.onkeydown = function(e) {
@@ -45,6 +49,11 @@
 <body>
     <h1>Chat App: {{ room }}</h1>
     <textarea id="chat" cols="80" rows="25" disabled></textarea>
+    {% for i in history %}
+    <script>
+    document.getElementById("chat").innerHTML += "{{ i }}" + "\n"
+    </script>
+    {% endfor %}
     <br>
     <br>
     <input id="text" size="80" placeholder="Enter your message here">

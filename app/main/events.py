@@ -8,8 +8,7 @@ from .models import storeMessage
 def joined(message):
     room = session.get('room')
     join_room(room)
-    msg = session.get('name') + ' has entered the room.'
-    print("\n\n", msg)
+    msg = '<' + session.get('name') + ' has entered the room.' + '>'
     emit('status', {'msg': msg}, room=room)
     storeMessage(msg, room)
 
@@ -26,6 +25,6 @@ def text(message):
 def left(message):
     room = session.get('room')
     leave_room(room)
-    msg = session.get('name') + ' has left the room.'
+    msg = '<' + session.get('name') + ' has left the room.' + '>'
     emit('status', {'msg': msg}, room=room)
     storeMessage(msg, room)

@@ -58,8 +58,6 @@ def chat(room):
     name = session.get('name', '')
     room = room
     if request.method == 'POST':
-        history = retrieveHistory(room)
-        print("\n\nHistory:", history)
         if name == '':
             return redirect(url_for('.login'))
         if room == '':
@@ -67,5 +65,13 @@ def chat(room):
         return render_template('chat.html', name=name, room=room,
                                history=history)
     if name and room:
-        return render_template('chat.html', name=name, room=room)
+        history = retrieveHistory(room)
+        return render_template('chat.html', name=name, room=room,
+                               history=history)
+    return redirect(url_for('.login'))
+
+
+@main.route('/logout', methods=['GET'])
+def logout():
+    session.clear()
     return redirect(url_for('.login'))

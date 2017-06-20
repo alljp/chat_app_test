@@ -10,17 +10,15 @@
         socket.emit('joined', {});
     });
 
-
-
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight
+        document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         socket.on('status', function(data) {
             document.getElementById("chat").innerHTML += '<' + data.msg + '>\n';
-            //document.getElementById("textarea").scrollTop = document.getElementById("chat").scrollHeight
+            //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         });
         socket.on('message', function(data) {
-            document.getElementById("chat").innerHTML += data.msg + '\n';
-            //document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight
+            document.getElementById("chat-'{{room}}'").innerHTML += data.msg + '\n';
+            //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         });
 
         document.onkeydown = function(e) {
@@ -48,10 +46,10 @@
 
 <body>
     <h1>Chat App: {{ room }}</h1>
-    <textarea id="chat" cols="80" rows="25" disabled></textarea>
+    <textarea id="chat-'{{room}}'" cols="80" rows="25" disabled></textarea>
     {% for i in history %}
     <script>
-    document.getElementById("chat").innerHTML += "{{ i }}" + "\n"
+    document.getElementById("chat-'{{room}}'").innerHTML += "{{ i }}" + "\n"
     </script>
     {% endfor %}
     <br>

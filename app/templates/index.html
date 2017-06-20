@@ -11,13 +11,15 @@
         <label>Select :</label>
         <select name="room">
             {% for i in rooms %}
-            <option value="{{ ix }}" {% if loop.first %} SELECTED{% endif %}>{{ i }}</option>
+            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
             <script>
             console.log("{{i}}");
             </script>
             {% endfor %}
             <br> {{ form.submit() }}
     </form>
+    <br>
+    <a href="{{url_for('main.logout')}}" "> Logout </a> 
 </body>
 
 </html>

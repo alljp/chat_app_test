@@ -61,9 +61,19 @@ def storeMessage(msg, room):
 def retrieveHistory(room):
     con = sql.connect("database.db")
     cur = con.cursor()
-    cur.execute("SELECT message FROM History WHERE room = ?", (room))
+    cur.execute("SELECT message FROM History WHERE room = ?", (room, ))
     msgs = cur.fetchall()
     msgs_list = []
     for i in msgs:
         msgs_list.append(i[0])
     return msgs_list
+
+
+def usersRooms(name):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("SELECT rooms FROM Users WHERE username =?", (name,))
+    rooms = cur.fetchone()
+    rooms_list = []
+    rooms_list.append(rooms[0].split(', '))
+    return rooms_list[0]

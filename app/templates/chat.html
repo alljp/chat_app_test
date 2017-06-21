@@ -13,7 +13,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         socket.on('status', function(data) {
-            document.getElementById("chat").innerHTML += data.msg + '\n';
+            document.getElementById("chat-'{{room}}'").innerHTML += data.msg + '\n';
             //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         });
         socket.on('message', function(data) {
@@ -38,7 +38,7 @@
         socket.emit('left', {}, function() {
             socket.disconnect();
 
-            window.location.href = "{{ url_for('main.index') }}";
+            window.location.href = "{{ url_for('.index') }}";
         });
     }
     </script>
@@ -54,10 +54,23 @@
     {% endfor %}
     <br>
     <br>
-    <input id="text" size="80" placeholder="Enter your message here">
-    <br>
+    <input id="text" size="70" placeholder="Enter your message here" autofocus="">
     <br>
     <a href="#" onclick="leave_room();">Leave this room</a>
+    <br>
+    <br>
+    <h4> Switch room </h4>
+    <form action="{{url_for('.index')}}" method="POST">
+        <label>Select :</label>
+        <select name="room" size=5 STYLE="width: 300px">
+            {% for i in rooms %}
+            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+            <script>
+            console.log("{{i}}");
+            </script>
+            {% endfor %}
+            <br> {{ form.submit() }}
+    </form>
 </body>
 
 </html>

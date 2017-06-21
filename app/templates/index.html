@@ -9,7 +9,7 @@
     <form action="" method="POST">
         <br>
         <label>Select :</label>
-        <select name="room">
+        <select name="room" size=5 STYLE="width: 300px">
             {% for i in rooms %}
             <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
             <script>

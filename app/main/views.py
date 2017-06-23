@@ -55,6 +55,7 @@ def index():
 
 @main.route('/chat/<room>', methods=['GET', 'POST'])
 def chat(room):
+    form = ChatForm()
     name = session.get('name', '')
     room = room
     if request.method == 'POST':
@@ -63,11 +64,11 @@ def chat(room):
         if room == '':
             return redirect(url_for('.index'))
         return render_template('chat.html', name=name, room=room,
-                               history=history)
+                               history=history, form=form)
     if name and room:
         history = retrieveHistory(room)
         return render_template('chat.html', name=name, room=room,
-                               history=history)
+                               history=history, form=form)
     return redirect(url_for('.login'))
 
 

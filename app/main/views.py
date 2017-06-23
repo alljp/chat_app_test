@@ -17,8 +17,6 @@ def login():
             error = 'Invalid Credentials.'
         else:
             session['name'] = name
-            session['rooms'] = usersRooms(name)
-            session['error'] = None
             return redirect(url_for('.index'))
     return render_template('login.html', error=error)
 
@@ -44,15 +42,14 @@ def index():
     form = ChatForm()
     if session.get('name'):
         print(session['name'])
+        rooms = usersRooms(session['name'])
         if request.method == 'POST':
-            session['room'] = form.room.data
-            return redirect(url_for('.chat', room=session['room']))
+            room = session['room'] = form.room.data
+            return redirect(url_for('.chat', room=room))
         if request.method == 'GET':
             form.room.data = ''
-            rooms = session['rooms']
-            error = session['error']
             return render_template('index.html', form=form,
-                                   rooms=rooms, error=error)
+                                   rooms=rooms, error=session.get('error'))
     return render_template('login.html', form=LoginForm)
 
 
@@ -61,22 +58,21 @@ def chat(room):
     form = ChatForm()
     name = session.get('name', '')
     room = room
-    history = retrieveHistory(room)
     if request.method == 'POST':
         if name == '':
             return redirect(url_for('.login'))
         if room == '':
             return redirect(url_for('.index'))
-        session['rooms'] = usersRooms(name)
-        return render_template('chat.html', name=name, room=room,
-                               history=history, form=form)
-    rooms = usersRooms(name)
-    if name and room in rooms:
+        rooms = usersRooms(name)
         return render_template('chat.html', name=name, room=room,
                                history=history, form=form, rooms=rooms)
+    rooms = usersRooms(name)
+    if name and room in rooms:
+        history = retrieveHistory(room)
+        return render_template('chat.html', history=history,
+                               form=form, rooms=rooms)
     else:
-        session['rooms'] = rooms
-        session['error'] = "You have not joined this room yet."
+        session['error'] = "Not a member of the room - {}".format(room)
         return redirect(url_for('.index'))
     return redirect(url_for('.login'))
 

@@ -5,35 +5,37 @@
 </head>
 
 <body>
-    <div class="left">
-        <h4>Select Room</h4>
-        <form action="" method="POST">
-            <br>
-            <label>Select :</label>
-            <select name="room">
-                {% for i in rooms %}
-                <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
-                {% endfor %}
-                <br> {{ form.submit() }}
-        </form>
+    <h4>Select Room</h4>
+    <form action="" method="POST">
         <br>
-        <div class="right">
-            <form action="" method="POST">
-                <br>
-                <a href="{{url_for('main.logout')}}" "> Logout </a>
         <label>Select :</label>
-        <select name="room " size=5 STYLE="width: 300px ">
+        <select name="room" size=5 STYLE="width: 300px ">
             {% for i in rooms %}
+            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+            {% endfor %}
+            <br> {{ form.submit() }}
+    </form>
+    <br>
+    <!-- <div class="right ">
+    <form action=" " method="POST ">
+        <br>
+        <label>Join room :</label>
+        <select name="room " size=5 STYLE="width: 300px ">
+            {% for i in allrooms %}
             <option value="{{ i }} " {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
             <script>
             console.log("{{i}} ");
             </script>
             {% endfor %}
             <br> {{ form.submit() }}
+        </select>
     </form>
+</div>
+ -->
+    <br> {% if error %}
+    <p class="error "><strong>Error:</strong> {{ error }} {% endif %}</p>
     <br>
-    {% if error %}
-    <p class="error "><strong>Error:</strong> {{ error }} {% endif %}
+    <a href="{{url_for( 'main.logout')}} " "> Logout </a>
 </body>
 
 </html>

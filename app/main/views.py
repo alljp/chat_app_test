@@ -17,6 +17,8 @@ def login():
             error = 'Invalid Credentials.'
         else:
             session['name'] = name
+            session['rooms'] = usersRooms(name)
+            session['error'] = None
             return redirect(url_for('.index'))
     return render_template('login.html', error=error)
 
@@ -40,8 +42,6 @@ def register():
 @main.route('/chat', methods=['GET', 'POST'])
 def index():
     form = ChatForm()
-    rooms = retrieveRooms()
-    print(rooms)
     if session.get('name'):
         print(session['name'])
         if request.method == 'POST':
@@ -49,7 +49,10 @@ def index():
             return redirect(url_for('.chat', room=session['room']))
         if request.method == 'GET':
             form.room.data = ''
-            return render_template('index.html', form=form, rooms=rooms)
+            rooms = session['rooms']
+            error = session['error']
+            return render_template('index.html', form=form,
+                                   rooms=rooms, error=error)
     return render_template('login.html', form=LoginForm)
 
 
@@ -58,18 +61,23 @@ def chat(room):
     form = ChatForm()
     name = session.get('name', '')
     room = room
-    rooms = retrieveRooms()
+    history = retrieveHistory(room)
     if request.method == 'POST':
         if name == '':
             return redirect(url_for('.login'))
         if room == '':
             return redirect(url_for('.index'))
+        session['rooms'] = usersRooms(name)
+        return render_template('chat.html', name=name, room=room,
+                               history=history, form=form)
+    rooms = usersRooms(name)
+    if name and room in rooms:
         return render_template('chat.html', name=name, room=room,
                                history=history, form=form, rooms=rooms)
-    if name and room:
-        history = retrieveHistory(room)
-        return render_template('chat.html', name=name, room=room,
-                               history=history, form=form, rooms=rooms)
+    else:
+        session['rooms'] = rooms
+        session['error'] = "You have not joined this room yet."
+        return redirect(url_for('.index'))
     return redirect(url_for('.login'))
 
 

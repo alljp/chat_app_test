@@ -5,21 +5,25 @@
 </head>
 
 <body>
-    <h1>Select Room</h1>
-    <form action="" method="POST">
+    <div class="left">
+        <h4>Select Room</h4>
+        <form action="" method="POST">
+            <br>
+            <label>Select :</label>
+            <select name="room">
+                {% for i in rooms %}
+                <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+                {% endfor %}
+                <br> {{ form.submit() }}
+        </form>
         <br>
-        <label>Select :</label>
-        <select name="room">
-            {% for i in rooms %}
-            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
-            <script>
-            console.log("{{i}}");
-            </script>
-            {% endfor %}
-            <br> {{ form.submit() }}
-    </form>
+        <div class="right">
+            <form action="" method="POST">
+                <br>
+                <a href="{{url_for('main.logout')}}" "> Logout </a>
     <br>
-    <a href="{{url_for('main.logout')}}" "> Logout </a> 
+    {% if error %}
+    <p class="error "><strong>Error:</strong> {{ error }} {% endif %}
 </body>
 
 </html>

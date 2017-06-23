@@ -54,7 +54,7 @@
     {% endfor %}
     <br>
     <br>
-    <input id="text" size="80" placeholder="Enter your message here">
+    <input id="text" size="70" placeholder="Enter your message here" autofocus="">
     <br>
     <a href="#" onclick="leave_room();">Leave this room</a>
     <br>
@@ -62,7 +62,7 @@
     <h4> Switch room </h4>
     <form action="{{url_for('.index')}}" method="POST">
         <label>Select :</label>
-        <select name="room">
+        <select name="room" size=5 STYLE="width: 300px">
             {% for i in rooms %}
             <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
             <script>

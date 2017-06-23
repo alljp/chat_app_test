@@ -21,6 +21,16 @@
             <form action="" method="POST">
                 <br>
                 <a href="{{url_for('main.logout')}}" "> Logout </a>
+        <label>Select :</label>
+        <select name="room " size=5 STYLE="width: 300px ">
+            {% for i in rooms %}
+            <option value="{{ i }} " {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+            <script>
+            console.log("{{i}} ");
+            </script>
+            {% endfor %}
+            <br> {{ form.submit() }}
+    </form>
     <br>
     {% if error %}
     <p class="error "><strong>Error:</strong> {{ error }} {% endif %}

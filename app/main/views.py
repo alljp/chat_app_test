@@ -2,7 +2,7 @@ from flask import session, redirect, url_for, render_template, request, flash
 from passlib.hash import sha256_crypt
 from . import main
 from .forms import LoginForm, ChatForm, RegistrationForm
-from .models import *
+from .models import retrieveHistory, retrieveRooms, registerUser, usersRooms, validateUser
 
 
 @main.route('/', methods=['GET', 'POST'])

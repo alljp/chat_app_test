@@ -128,3 +128,13 @@ def deleteRoom(room):
     cur.execute("DELETE FROM Rooms WHERE roomname = ?", (room,))
     con.commit()
     con.close()
+
+
+def addUsers(room, users):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    for user in users:
+        cur.execute(
+            "INSERT INTO room_{} (username) VALUES (?)".format(room,), (user,))
+        con.commit()
+    con.close()

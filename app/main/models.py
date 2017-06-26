@@ -108,10 +108,11 @@ def leaveRoom(name, room):
     con.close()
 
 
-def createRoom(room):
+def createRoom(room, admin):
     con = sql.connect("database.db")
     cur = con.cursor()
-    cur.execute("INSERT INTO Rooms (roomname) VALUES (?)", (room, ))
+    cur.execute("INSERT INTO Rooms (roomname, admin) VALUES (?,?)",
+                (room, admin,))
     cur.execute(
         """CREATE TABLE IF NOT EXISTS room_{}
          (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL) """.format(room))

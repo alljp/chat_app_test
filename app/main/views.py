@@ -87,7 +87,7 @@ def create_room():
             users = request.form.getlist('users')
             for user in users:
                 models.joinRoom(user, room)
-            models.createRoom(room)
+            models.createRoom(room, session['name'])
             models.addUsers(room, users)
             return ("<p>Room-{} created</p>".format(room))
 

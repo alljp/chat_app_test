@@ -1,19 +1,18 @@
 from flask import session, redirect, url_for, render_template, request, flash
 from passlib.hash import sha256_crypt
 from . import main
-from .forms import LoginForm, ChatForm, RegistrationForm
-from .models import *
+from . import forms
+from . import models
 
 
 @main.route('/', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    form = forms.LoginForm()
     error = None
     if request.method == 'POST':
         name = form.name.data
         password = str(form.password.data)
-        print("\n\n\n", name+" "+password)
-        if not validateUser(name, password):
+        if not models.validateUser(name, password):
             error = 'Invalid Credentials.'
         else:
             session['name'] = name
@@ -21,54 +20,56 @@ def login():
     return render_template('login.html', error=error)
 
 
-@main.route('/register', methods=['GET', 'POST'])
+@main.route('/register/', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm()
+    form = forms.RegistrationForm()
     if request.method == 'POST':
         print("Success")
         name = form.name.data
-        print("\n\n", form.name.data, form.password.data)
-        print(form)
         password = sha256_crypt.encrypt((str(form.password.data)))
-        registerUser(name, password)
+        models.registerUser(name, password)
         # session['logged_in'] = True
         session['name'] = name
         return redirect(url_for('.index'))
     return render_template('register.html')
 
 
-@main.route('/chat', methods=['GET', 'POST'])
+@main.route('/chat/', methods=['GET', 'POST'])
 def index():
-    form = ChatForm()
-    rooms = retrieveRooms()
-    print(rooms)
+    form = forms.ChatForm()
+    allrooms = models.retrieveRooms()
     if session.get('name'):
-        print(session['name'])
+        rooms = models.usersRooms(session['name'])
         if request.method == 'POST':
-            session['room'] = form.room.data
-            return redirect(url_for('.chat', room=session['room']))
+            room = session['room'] = form.room.data
+            return redirect(url_for('.chat', room=room))
         if request.method == 'GET':
             form.room.data = ''
-            return render_template('index.html', form=form, rooms=rooms)
+            return render_template('index.html', form=form, allrooms=allrooms,
+                                   rooms=rooms, error=session.get('error'))
     return render_template('login.html', form=LoginForm)
 
 
-@main.route('/chat/<room>', methods=['GET', 'POST'])
+@main.route('/chat/<room>/', methods=['GET', 'POST'])
 def chat(room):
-    form = ChatForm()
+    form = forms.ChatForm()
     name = session.get('name', '')
     room = room
+    rooms = models.usersRooms(name)
     if request.method == 'POST':
         if name == '':
             return redirect(url_for('.login'))
         if room == '':
             return redirect(url_for('.index'))
         return render_template('chat.html', name=name, room=room,
-                               history=history, form=form)
-    if name and room:
-        history = retrieveHistory(room)
-        return render_template('chat.html', name=name, room=room,
-                               history=history, form=form)
+                               history=history, form=form, rooms=rooms)
+    if name and room in rooms:
+        history = models.retrieveHistory(room)
+        return render_template('chat.html', history=history,
+                               form=form, rooms=rooms)
+    else:
+        session['error'] = "Not a member of the room - {}".format(room)
+        return redirect(url_for('.index'))
     return redirect(url_for('.login'))
 
 

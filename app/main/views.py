@@ -47,7 +47,7 @@ def index():
             form.room.data = ''
             return render_template('index.html', form=form, allrooms=allrooms,
                                    rooms=rooms, error=session.get('error'))
-    return render_template('login.html', form=LoginForm)
+    return render_template('login.html', form=forms.LoginForm)
 
 
 @main.route('/chat/<room>/', methods=['GET', 'POST'])

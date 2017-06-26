@@ -8,7 +8,7 @@ from .models import storeMessage
 def joined(message):
     room = session.get('room')
     join_room(room)
-    msg = '<' + session.get('name') + ' has entered the room.' + '>'
+    msg = '< {} has entered the room. >'.format(session.get('name'))
     emit('status', {'msg': msg}, room=room)
     storeMessage(msg, room)
 
@@ -16,7 +16,7 @@ def joined(message):
 @socketio.on('text', namespace='/chat')
 def text(message):
     room = session.get('room')
-    msg = session.get('name') + ':' + message['msg']
+    msg = '{}: {}' .format(session.get('name'), message['msg'])
     emit('message', {'msg': msg}, room=room)
     storeMessage(msg, room)
 
@@ -25,6 +25,6 @@ def text(message):
 def left(message):
     room = session.get('room')
     leave_room(room)
-    msg = '<' + session.get('name') + ' has left the room.' + '>'
+    msg = '< {} has left the room. >'.format(session.get('name'))
     emit('status', {'msg': msg}, room=room)
     storeMessage(msg, room)

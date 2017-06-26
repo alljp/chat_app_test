@@ -77,3 +77,32 @@ def usersRooms(name):
     rooms_list = []
     rooms_list.append(rooms[0].split(', '))
     return rooms_list[0]
+
+
+def joinRoom(name, room):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    rooms = usersRooms(name)
+    rooms.pop()
+    rooms.append(room)
+    r = ""
+    for i in rooms:
+        r += i + ", "
+    cur.execute("UPDATE Users SET rooms = ? WHERE username = ? ", (r, name,))
+    con.commit()
+    con.close()
+
+
+def leaveRoom(name, room):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    rooms = usersRooms(name)
+    rooms.pop()
+    rooms.remove(room)
+    print(rooms)
+    r = ""
+    for i in rooms:
+        r += i + ", "
+    cur.execute("UPDATE Users SET rooms = ? WHERE username = ? ", (r, name,))
+    con.commit()
+    con.close()

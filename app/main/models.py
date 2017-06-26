@@ -76,6 +76,7 @@ def usersRooms(name):
     rooms = cur.fetchone()
     rooms_list = []
     rooms_list.append(rooms[0].split(', '))
+    rooms_list[0].pop()
     return rooms_list[0]
 
 

@@ -106,3 +106,25 @@ def leaveRoom(name, room):
     cur.execute("UPDATE Users SET rooms = ? WHERE username = ? ", (r, name,))
     con.commit()
     con.close()
+
+
+def createRoom(room):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    # query = "CREATE TABLE room_{} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL)".format(
+    #     room)
+    # print(query)
+    cur.execute("INSERT INTO Rooms (roomname) VALUES (?)", (room, ))
+    cur.execute(
+        "CREATE TABLE IF NOT EXISTS room_{} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL) ".format(room))
+    # cur.execute(query)
+    con.commit()
+    con.close()
+
+
+def deleteRoom(room):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("DELETE FROM Rooms WHERE roomname = ?", (room,))
+    con.commit()
+    con.close()

@@ -111,13 +111,10 @@ def leaveRoom(name, room):
 def createRoom(room):
     con = sql.connect("database.db")
     cur = con.cursor()
-    # query = "CREATE TABLE room_{} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL)".format(
-    #     room)
-    # print(query)
     cur.execute("INSERT INTO Rooms (roomname) VALUES (?)", (room, ))
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS room_{} (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL) ".format(room))
-    # cur.execute(query)
+        """CREATE TABLE IF NOT EXISTS room_{}
+         (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL) """.format(room))
     con.commit()
     con.close()
 

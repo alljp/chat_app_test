@@ -77,3 +77,22 @@ def chat(room):
 def logout():
     session.clear()
     return redirect(url_for('.login'))
+
+
+@main.route('/create-room/', methods=['GET', 'POST'])
+def create_room():
+    if session.get('name'):
+        if request.method == 'POST':
+            room = request.form.get('room')
+            users = request.form.getlist('users')
+            for user in users:
+                models.joinRoom(user, room)
+            models.createRoom(room)
+            models.addUsers(room, users)
+            return ("<p>Room-{} created</p>".format(room))
+
+        else:
+            users = models.retrieveUsers()
+            users_list = [i[0] for i in users]
+            return render_template('create_room.html', users=users_list)
+    return redirect(url_for('.login'))

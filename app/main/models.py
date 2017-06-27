@@ -81,7 +81,6 @@ def joinRoom(name, room):
     con = sql.connect("database.db")
     cur = con.cursor()
     rooms = usersRooms(name)
-    rooms.pop()
     rooms.append(room)
     r = ""
     for i in rooms:
@@ -95,9 +94,7 @@ def leaveRoom(name, room):
     con = sql.connect("database.db")
     cur = con.cursor()
     rooms = usersRooms(name)
-    rooms.pop()
     rooms.remove(room)
-    print(rooms)
     r = ""
     for i in rooms:
         r += i + ", "

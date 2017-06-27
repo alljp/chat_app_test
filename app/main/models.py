@@ -136,6 +136,16 @@ def addUsers(room, users):
     con.close()
 
 
+def removeUsers(room, users):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    for user in users:
+        cur.execute(
+            "DELETE FROM room_{} WHERE username = ?".format(room, ), (user,))
+        con.commit()
+    con.close()
+
+
 def getAdmin(room):
     con = sql.connect("database.db")
     cur = con.cursor()

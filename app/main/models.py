@@ -30,10 +30,7 @@ def validateUser(name, password):
         "SELECT username, password FROM Users WHERE username = ?", (name,))
     user_details = cur.fetchone()
     con.close()
-    print("\n\nreached")
-    print(user_details)
     if user_details and sha256_crypt.verify(password, user_details[1]):
-        print("\n\nsuccess")
         return True
     return False
 
@@ -144,3 +141,14 @@ def getAdmin(room):
     cur = con.cursor()
     cur.execute("SELECT admin from rooms WHERE roomname = ?", (room,))
     return cur.fetchone()[0]
+
+
+def roomsUsers(room):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("SELECT username FROM room_{}".format(room))
+    users = cur.fetchall()
+    users_list = []
+    for user in users:
+        users_list.append(user[0])
+    return users_list

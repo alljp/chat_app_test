@@ -8,7 +8,7 @@ from . import models
 @main.route('/', methods=['GET', 'POST'])
 def login():
     form = forms.LoginForm()
-    error = None
+    error = session.get('error')
     if request.method == 'POST':
         name = form.name.data
         password = str(form.password.data)
@@ -47,29 +47,24 @@ def index():
             form.room.data = ''
             return render_template('index.html', form=form, allrooms=allrooms,
                                    rooms=rooms, error=session.get('error'))
-    return render_template('login.html', form=forms.LoginForm)
+    error = 'Not logged in!'
+    return render_template('login.html', form=forms.LoginForm, error=error)
 
 
 @main.route('/chat/<room>/', methods=['GET', 'POST'])
 def chat(room):
     form = forms.ChatForm()
-    name = session.get('name', '')
-    room = room
-    rooms = models.usersRooms(name)
-    if request.method == 'POST':
-        if name == '':
-            return redirect(url_for('.login'))
-        if room == '':
+    if session.get('name'):
+        rooms = models.usersRooms(session['name'])
+        if room in rooms:
+            history = models.retrieveHistory(room)
+            return render_template('chat.html', name=session.get('name'),
+                                   room=room, history=history, form=form,
+                                   rooms=rooms)
+        else:
+            session['error'] = 'Not a member of the room - {}'.format(room)
             return redirect(url_for('.index'))
-        return render_template('chat.html', name=name, room=room,
-                               history=history, form=form, rooms=rooms)
-    if name and room in rooms:
-        history = models.retrieveHistory(room)
-        return render_template('chat.html', history=history,
-                               form=form, rooms=rooms)
-    else:
-        session['error'] = "Not a member of the room - {}".format(room)
-        return redirect(url_for('.index'))
+    session['error'] = 'You are not logged in!'
     return redirect(url_for('.login'))
 
 

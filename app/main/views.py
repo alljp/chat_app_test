@@ -55,12 +55,14 @@ def index():
 def chat(room):
     form = forms.ChatForm()
     if session.get('name'):
+        admin = session.get('name') == models.getAdmin(room)
+        print("\n\nisAdmin?", admin)
         rooms = models.usersRooms(session['name'])
         if room in rooms:
             history = models.retrieveHistory(room)
             return render_template('chat.html', name=session.get('name'),
                                    room=room, history=history, form=form,
-                                   rooms=rooms)
+                                   rooms=rooms, admin=admin)
         else:
             session['error'] = 'Not a member of the room - {}'.format(room)
             return redirect(url_for('.index'))

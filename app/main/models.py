@@ -137,3 +137,10 @@ def addUsers(room, users):
             "INSERT INTO room_{} (username) VALUES (?)".format(room,), (user,))
         con.commit()
     con.close()
+
+
+def getAdmin(room):
+    con = sql.connect("database.db")
+    cur = con.cursor()
+    cur.execute("SELECT admin from rooms WHERE roomname = ?", (room,))
+    return cur.fetchone()[0]

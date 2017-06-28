@@ -27,8 +27,9 @@ def register():
         print("Success")
         name = form.name.data
         password = sha256_crypt.encrypt((str(form.password.data)))
-        models.registerUser(name, password)
-        # session['logged_in'] = True
+        error = models.registerUser(name, password)
+        if error:
+            return render_template('register.html', error=error)
         session['name'] = name
         return redirect(url_for('.index'))
     return render_template('register.html')

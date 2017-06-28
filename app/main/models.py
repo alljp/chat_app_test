@@ -17,11 +17,13 @@ def retrieveUsers():
 def registerUser(name, password):
     con = sql.connect("database.db")
     cur = con.cursor()
-    cur.execute("INSERT INTO Users (username,password) VALUES (?,?)",
-                (name, password))
+    try:
+        cur.execute("INSERT INTO Users (username,password) VALUES (?,?)",
+                    (name, password))
+    except sql.IntegrityError:
+        return "Username already taken"
     con.commit()
     con.close()
-    print(name, password)
 
 
 def validateUser(name, password):

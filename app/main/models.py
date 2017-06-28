@@ -10,7 +10,8 @@ def retrieveUsers():
     cur.execute("SELECT username, password FROM Users")
     users = cur.fetchall()
     con.close()
-    return users
+    users_list = [i[0] for i in users]
+    return users_list
 
 
 def registerUser(name, password):

@@ -62,6 +62,7 @@
     <h4> Switch room </h4>
     <form action="{{url_for('.index')}}" method="POST">
         <label>Select :</label>
+        <br>
         <select name="room" size=5 STYLE="width: 300px">
             {% for i in rooms %}
             <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
@@ -72,9 +73,7 @@
             <br> {{ form.submit() }}
         </select>
     </form>
-    {% if admin %}
-    <p> Admin </p>
-    {% endif %}
+    {% if admin %} {% include 'room_admin_view.html' %} {% endif %}
 </body>
 
 </html>

@@ -55,19 +55,44 @@ def index():
 def chat(room):
     form = forms.ChatForm()
     if session.get('name'):
+        if request.form.get('remove'):
+            remove(room)
+        if request.form.get('add'):
+            add(room)
         admin = session.get('name') == models.getAdmin(room)
-        print("\n\nisAdmin?", admin)
+        users = models.roomsUsers(room) if admin else None
+        allusers = models.retrieveUsers() if admin else None
         rooms = models.usersRooms(session['name'])
         if room in rooms:
             history = models.retrieveHistory(room)
             return render_template('chat.html', name=session.get('name'),
                                    room=room, history=history, form=form,
-                                   rooms=rooms, admin=admin)
+                                   rooms=rooms, admin=admin, users=users,
+                                   allusers=allusers)
         else:
             session['error'] = 'Not a member of the room - {}'.format(room)
             return redirect(url_for('.index'))
     session['error'] = 'You are not logged in!'
     return redirect(url_for('.login'))
+
+
+def remove(room):
+    print("Remove")
+    users = request.form.getlist('users')
+    print(users)
+    for user in users:
+        print(user)
+        models.leaveRoom(user, room)
+    models.removeUsers(room, users)
+    return redirect(url_for('.chat', room=room))
+
+
+def add(room):
+    users = request.form.getlist('users')
+    for user in users:
+        models.joinRoom(user, room)
+    models.addUsers(room, users)
+    return redirect(url_for('.chat', room=room))
 
 
 @main.route('/logout', methods=['GET'])
@@ -90,6 +115,5 @@ def create_room():
 
         else:
             users = models.retrieveUsers()
-            users_list = [i[0] for i in users]
-            return render_template('create_room.html', users=users_list)
+            return render_template('create_room.html', users=users)
     return redirect(url_for('.login'))

@@ -1,0 +1,25 @@
+<h4>Admin actions</h4>
+<label>Members</label>
+<br>
+<form action="{{url_for('.chat', room=room)}}" method='POST'>
+    <input type='hidden' name='remove' value='true'>
+    <select multiple name="users" size=5 STYLE="width: 300px ">
+        {% for i in users %}
+        <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+        {% endfor %}
+        <br>
+    </select>
+    <input type='submit' value='Remove'>
+</form>
+<br>
+<label>Add Members</label>
+<form action="{{url_for('.chat', room=room)}}" method='POST'>
+    <input type='hidden' name='add' value='true'>
+    <select multiple name="users" size=5 STYLE="width: 300px ">
+        {% for i in allusers %} {% if i not in users %}
+        <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+        {% endif %} {% endfor %}
+        <br>
+    </select>
+    <input type='submit' value='Add Members'>
+</form>

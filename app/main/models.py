@@ -72,10 +72,12 @@ def usersRooms(name):
     cur = con.cursor()
     cur.execute("SELECT rooms FROM Users WHERE username =?", (name,))
     rooms = cur.fetchone()
-    rooms_list = []
-    rooms_list.append(rooms[0].split(', '))
-    rooms_list[0].pop()
-    return rooms_list[0]
+    if rooms[0]:
+        rooms_list = []
+        rooms_list.append(rooms[0].split(', '))
+        rooms_list[0].pop()
+        return rooms_list[0]
+    return []
 
 
 def joinRoom(name, room):

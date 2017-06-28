@@ -22,6 +22,8 @@ def registerUser(name, password):
                     (name, password))
     except sql.IntegrityError:
         return "Username already taken"
+    addUsers("Global", name)
+    joinRoom(name, Global)
     con.commit()
     con.close()
 

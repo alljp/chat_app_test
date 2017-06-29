@@ -1,12 +1,18 @@
 import sqlite3 as sql
 from passlib.hash import sha256_crypt
-# con = sql.connect("database.db")
-# cur = con.cursor()
+
+
+db = 'database.db'
+
+
+def connect(db):
+    con = sql.connect(db)
+    cur = con.cursor()
+    return con, cur
 
 
 def retrieveUsers():
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("SELECT username, password FROM Users")
     users = cur.fetchall()
     con.close()
@@ -15,8 +21,7 @@ def retrieveUsers():
 
 
 def registerUser(name, password):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     try:
         cur.execute("INSERT INTO Users (username,password) VALUES (?,?)",
                     (name, password))
@@ -29,8 +34,7 @@ def registerUser(name, password):
 
 
 def validateUser(name, password):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute(
         "SELECT username, password FROM Users WHERE username = ?", (name,))
     user_details = cur.fetchone()
@@ -41,8 +45,7 @@ def validateUser(name, password):
 
 
 def retrieveRooms():
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("SELECT roomname FROM Rooms")
     rooms = cur.fetchall()
     rooms_list = []
@@ -52,8 +55,7 @@ def retrieveRooms():
 
 
 def storeMessage(msg, room):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("INSERT INTO History (message, room) VALUES (?,?)",
                 (msg, room))
     con.commit()
@@ -61,8 +63,7 @@ def storeMessage(msg, room):
 
 
 def retrieveHistory(room):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("SELECT message FROM History WHERE room = ?", (room, ))
     msgs = cur.fetchall()
     msgs_list = []
@@ -72,8 +73,7 @@ def retrieveHistory(room):
 
 
 def usersRooms(name):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("SELECT rooms FROM Users WHERE username =?", (name,))
     rooms = cur.fetchone()
     if rooms[0]:
@@ -85,8 +85,7 @@ def usersRooms(name):
 
 
 def joinRoom(name, room):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     rooms = usersRooms(name)
     rooms.append(room)
     r = ""
@@ -98,8 +97,7 @@ def joinRoom(name, room):
 
 
 def leaveRoom(name, room):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     rooms = usersRooms(name)
     rooms.remove(room)
     r = ""
@@ -111,8 +109,7 @@ def leaveRoom(name, room):
 
 
 def createRoom(room, admin):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("INSERT INTO Rooms (roomname, admin) VALUES (?,?)",
                 (room, admin,))
     cur.execute(
@@ -123,16 +120,14 @@ def createRoom(room, admin):
 
 
 def deleteRoom(room):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("DELETE FROM Rooms WHERE roomname = ?", (room,))
     con.commit()
     con.close()
 
 
 def addUsers(room, users):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     for user in users:
         cur.execute(
             "INSERT INTO room_{} (username) VALUES (?)".format(room,), (user,))
@@ -141,8 +136,7 @@ def addUsers(room, users):
 
 
 def removeUsers(room, users):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     for user in users:
         cur.execute(
             "DELETE FROM room_{} WHERE username = ?".format(room, ), (user,))
@@ -151,15 +145,13 @@ def removeUsers(room, users):
 
 
 def getAdmin(room):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("SELECT admin from rooms WHERE roomname = ?", (room,))
     return cur.fetchone()[0]
 
 
 def roomsUsers(room):
-    con = sql.connect("database.db")
-    cur = con.cursor()
+    con, cur = connect(db)
     cur.execute("SELECT username FROM room_{}".format(room))
     users = cur.fetchall()
     users_list = []

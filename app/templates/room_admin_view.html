@@ -23,3 +23,7 @@
     </select>
     <input type='submit' value='Add Members'>
 </form>
+<form action="{{url_for('.chat', room=room)}}" method='POST' onsubmit="return confirm('Are you sure?');">
+    <input type='hidden' name='delete' value='true'>
+    <input type='submit' value='Delete Room'>
+</form>

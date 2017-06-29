@@ -60,6 +60,8 @@ def chat(room):
             remove(room)
         if request.form.get('add'):
             add(room)
+        if request.form.get('delete'):
+            models.deleteRoom(room)
         rooms = models.usersRooms(session['name'])
         if room in rooms:
             admin = session.get('name') == models.getAdmin(room)

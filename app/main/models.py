@@ -122,8 +122,20 @@ def createRoom(room):
 
 
 def deleteRoom(room):
+    users = roomsUsers(room)
     con, cur = connect(db)
     cur.execute("DELETE FROM Rooms WHERE roomname = ?", (room,))
+    cur.execute("DROP TABLE room_{}".format(room))
+    con.commit()
+    con.close()
+    for user in users:
+        leaveRoom(user, room)
+    deleteRoomHistory(room)
+
+
+def deleteRoomHistory(room):
+    con, cur = connect(db)
+    cur.execute("DELETE FROM History WHERE room = ?", (room,))
     con.commit()
     con.close()
 

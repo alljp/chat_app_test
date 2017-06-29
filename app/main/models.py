@@ -135,21 +135,26 @@ def addUsers(room, users):
             cur.execute(
                 "INSERT INTO room_{} (username) VALUES (?)".format(room,),
                 (user,))
-            con.commit()
     else:
         cur.execute(
             "INSERT INTO room_{} (username) VALUES (?)".format(room,),
             (users,))
-        con.commit()
+    con.commit()
     con.close()
 
 
 def removeUsers(room, users):
     con, cur = connect(db)
-    for user in users:
+    if type(users) is list:
+        for user in users:
+            cur.execute(
+                "DELETE FROM room_{} WHERE username = ?".format(room, ),
+                (user,))
+    else:
         cur.execute(
-            "DELETE FROM room_{} WHERE username = ?".format(room, ), (user,))
-        con.commit()
+            "INSERT INTO room_{} (username) VALUES (?)".format(room,),
+            (users,))
+    con.commit()
     con.close()
 
 

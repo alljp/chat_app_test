@@ -23,14 +23,14 @@ def retrieveUsers():
 def registerUser(name, password):
     con, cur = connect(db)
     try:
-        cur.execute("INSERT INTO Users (username,password) VALUES (?,?)",
+        cur.execute("INSERT INTO Users (username, password) VALUES (?,?)",
                     (name, password))
     except sql.IntegrityError:
         return "Username already taken"
-    addUsers("Global", name)
-    joinRoom(name, Global)
     con.commit()
     con.close()
+    addUsers("Global", name)
+    joinRoom(name, "Global")
 
 
 def validateUser(name, password):
@@ -66,6 +66,7 @@ def retrieveHistory(room):
     con, cur = connect(db)
     cur.execute("SELECT message FROM History WHERE room = ?", (room, ))
     msgs = cur.fetchall()
+    con.close()
     msgs_list = []
     for i in msgs:
         msgs_list.append(i[0])
@@ -76,6 +77,7 @@ def usersRooms(name):
     con, cur = connect(db)
     cur.execute("SELECT rooms FROM Users WHERE username =?", (name,))
     rooms = cur.fetchone()
+    con.close()
     if rooms[0]:
         rooms_list = []
         rooms_list.append(rooms[0].split(', '))
@@ -108,7 +110,7 @@ def leaveRoom(name, room):
     con.close()
 
 
-def createRoom(room, admin):
+def createRoom(room):
     con, cur = connect(db)
     cur.execute("INSERT INTO Rooms (roomname, admin) VALUES (?,?)",
                 (room, admin,))
@@ -128,9 +130,16 @@ def deleteRoom(room):
 
 def addUsers(room, users):
     con, cur = connect(db)
-    for user in users:
+    if type(users) is list:
+        for user in users:
+            cur.execute(
+                "INSERT INTO room_{} (username) VALUES (?)".format(room,),
+                (user,))
+            con.commit()
+    else:
         cur.execute(
-            "INSERT INTO room_{} (username) VALUES (?)".format(room,), (user,))
+            "INSERT INTO room_{} (username) VALUES (?)".format(room,),
+            (users,))
         con.commit()
     con.close()
 
@@ -147,13 +156,18 @@ def removeUsers(room, users):
 def getAdmin(room):
     con, cur = connect(db)
     cur.execute("SELECT admin from rooms WHERE roomname = ?", (room,))
-    return cur.fetchone()[0]
+    admin = cur.fetchone()
+    con.close()
+    if admin:
+        return admin[0]
+    return admin
 
 
 def roomsUsers(room):
     con, cur = connect(db)
     cur.execute("SELECT username FROM room_{}".format(room))
     users = cur.fetchall()
+    con.close()
     users_list = []
     for user in users:
         users_list.append(user[0])

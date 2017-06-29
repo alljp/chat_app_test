@@ -60,11 +60,11 @@ def chat(room):
             remove(room)
         if request.form.get('add'):
             add(room)
-        admin = session.get('name') == models.getAdmin(room)
-        users = models.roomsUsers(room) if admin else None
-        allusers = models.retrieveUsers() if admin else None
         rooms = models.usersRooms(session['name'])
         if room in rooms:
+            admin = session.get('name') == models.getAdmin(room)
+            users = models.roomsUsers(room) if admin else None
+            allusers = models.retrieveUsers() if admin else None
             history = models.retrieveHistory(room)
             return render_template('chat.html', name=session.get('name'),
                                    room=room, history=history, form=form,

@@ -62,6 +62,7 @@ def chat(room):
             add(room)
         if request.form.get('delete'):
             models.deleteRoom(room)
+            return redirect(url_for('.index'))
         rooms = models.usersRooms(session['name'])
         if room in rooms:
             admin = session.get('name') == models.getAdmin(room)

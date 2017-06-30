@@ -110,13 +110,15 @@ def leaveRoom(name, room):
     con.close()
 
 
-def createRoom(room):
+def createRoom(room, admin):
     con, cur = connect(db)
-    cur.execute("INSERT INTO Rooms (roomname, admin) VALUES (?,?)",
-                (room, admin,))
     cur.execute(
         """CREATE TABLE IF NOT EXISTS room_{}
          (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL) """.format(room))
+    rooms = retrieveRooms()
+    if room not in rooms:
+        cur.execute("INSERT INTO Rooms (roomname, admin) VALUES (?,?)",
+                    (room, admin,))
     con.commit()
     con.close()
 

@@ -119,6 +119,7 @@ def add(room):
 @main.route('/logout', methods=['GET'])
 def logout():
     session.clear()
+    flash('You were successfully logged out')
     return redirect(url_for('.login'))
 
 

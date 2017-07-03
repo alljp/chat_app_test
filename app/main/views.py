@@ -55,7 +55,7 @@ def index():
                                    rooms=rooms, users=users,
                                    name=session.get('name'))
     flash("You are not logged in")
-    return render_template('login.html', form=forms.LoginForm)
+    return redirect(url_for('.login'))
 
 
 def private(room):

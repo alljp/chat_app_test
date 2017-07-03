@@ -48,9 +48,8 @@ def retrieveRooms():
     con, cur = connect(db)
     cur.execute("SELECT roomname FROM Rooms")
     rooms = cur.fetchall()
-    rooms_list = []
-    for i in rooms:
-        rooms_list.append(i[0])
+    con.close()
+    rooms_list = [i[0] for i in rooms]
     return rooms_list
 
 
@@ -67,9 +66,7 @@ def retrieveHistory(room):
     cur.execute("SELECT message FROM History WHERE room = ?", (room, ))
     msgs = cur.fetchall()
     con.close()
-    msgs_list = []
-    for i in msgs:
-        msgs_list.append(i[0])
+    msgs_list = [i[0] for i in msgs]
     return msgs_list
 
 
@@ -78,9 +75,8 @@ def usersRooms(name):
     cur.execute("SELECT rooms FROM Users WHERE username =?", (name,))
     rooms = cur.fetchone()
     con.close()
-    if rooms[0]:
-        rooms_list = []
-        rooms_list.append(rooms[0].split(', '))
+    if rooms:
+        rooms_list = [rooms[0].split(', ')]
         rooms_list[0].pop()
         return rooms_list[0]
     return []
@@ -91,9 +87,8 @@ def joinRoom(name, room):
     rooms = usersRooms(name)
     if room not in rooms:
         rooms.append(room)
-        r = ""
-        for i in rooms:
-            r += i + ", "
+        r = ', '.join(rooms)
+        r += ', '
         cur.execute(
             "UPDATE Users SET rooms = ? WHERE username = ? ", (r, name,))
     con.commit()
@@ -104,9 +99,8 @@ def leaveRoom(name, room):
     con, cur = connect(db)
     rooms = usersRooms(name)
     rooms.remove(room)
-    r = ""
-    for i in rooms:
-        r += i + ", "
+    r = ', '.join(rooms)
+    r += ', '
     cur.execute("UPDATE Users SET rooms = ? WHERE username = ? ", (r, name,))
     con.commit()
     con.close()
@@ -189,9 +183,7 @@ def roomsUsers(room):
     cur.execute("SELECT username FROM room_{}".format(room))
     users = cur.fetchall()
     con.close()
-    users_list = []
-    for user in users:
-        users_list.append(user[0])
+    users_list = [i[0] for i in users]
     return users_list
 
 
@@ -201,7 +193,7 @@ def createPrivateRoom(room, name1, name2):
         """CREATE TABLE IF NOT EXISTS room_{}
          (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL) """.format(room))
     con.commit()
+    con.close()
     addUsers(room, [name1, name2])
     joinRoom(name1, room)
     joinRoom(name2, room)
-    con.close()

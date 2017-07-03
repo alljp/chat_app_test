@@ -1,0 +1,37 @@
+<h4>Private Chat</h4>
+<form name="privateForm" action="" method="POST">
+    <input type="hidden" name="private" value="true">
+    <label>Select User</label>
+    <br>
+    <select name="room" size=5 STYLE="width:300px">
+        {% for i in users %}
+        <option value="{{i}}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+        {% endfor %}
+        <br>
+    </select>
+    <input type='submit' value='Chat'>
+</form>
+<!-- <script>
+function doSubmit() {
+    var name1 = document.getElementById("room").value;
+    console.log(name1);
+    room = name1 > name ? name + '_' + name1 name1 + '_' + name;
+    room = 'room_' + room;
+    console.log(room);
+    document.privateForm.room = room;
+    return True
+}
+console.log("Blah")
+window.onload = function() {
+    console.log("Hi there!")
+    document.getElementById('privateForm').onsubmit = function() {
+        var e = document.getElementById('room');
+        name1 = e.options[e.selectedIndex].value;
+        room = name1 > name ? name + '_' + name1 name1 + '_' + name;
+        room = 'room_' + room;
+        console.log(room);
+        e.options[e.selectedIndex].value = room;
+    };
+};​
+</script>
+ -->

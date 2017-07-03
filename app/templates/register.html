@@ -2,6 +2,9 @@
 
 <head>
     <title>Chat App - Register</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/stylesheet/bulma.css" media="all"></link>
+    <link rel="stylesheet" href="/stylesheet/style.css"></link>
 </head>
 
 <body>
@@ -9,7 +12,8 @@
         <h4> Register</h4>
         <br>
         <form action="" method="POST">
-            <input type="text" placeholder="Username" name="name" value="{{request.form.name}}"> {% if error %} Username is already taken! {% endif %}
+            <input type="text" placeholder="Username" name="name" value="{{request.form.name}}"> {% if error %}
+            <p class="has-text-warning">Username is already taken!</p> {% endif %}
             <input type="password" placeholder="Password" name="password" value="{{request.form.password}}">
             <input type="password" placeholder="Confirm Password" name="{{request.form.confirm}}">
             <input type="submit" value="Submit">

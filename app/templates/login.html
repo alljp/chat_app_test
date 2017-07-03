@@ -2,6 +2,9 @@
 
 <head>
     <title>Chat App - Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/stylesheet/bulma.css" media="all"></link>
+    <link rel="stylesheet" href="/stylesheet/style.css"></link>
 </head>
 
 <body>
@@ -15,7 +18,8 @@
             <input class="btn btn-default" type="submit" value="Login">
         </form>
         {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }} {% endif %}
+        <p class="has-text-warning"><strong>Error:</strong> {{ error
+ }} {% endif %}
             <br>
             <a href="{{url_for('main.register')}}" "> Register </a> 
     </div>

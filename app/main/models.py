@@ -89,11 +89,13 @@ def usersRooms(name):
 def joinRoom(name, room):
     con, cur = connect(db)
     rooms = usersRooms(name)
-    rooms.append(room)
-    r = ""
-    for i in rooms:
-        r += i + ", "
-    cur.execute("UPDATE Users SET rooms = ? WHERE username = ? ", (r, name,))
+    if room not in rooms:
+        rooms.append(room)
+        r = ""
+        for i in rooms:
+            r += i + ", "
+        cur.execute(
+            "UPDATE Users SET rooms = ? WHERE username = ? ", (r, name,))
     con.commit()
     con.close()
 
@@ -191,3 +193,15 @@ def roomsUsers(room):
     for user in users:
         users_list.append(user[0])
     return users_list
+
+
+def createPrivateRoom(room, name1, name2):
+    con, cur = connect(db)
+    cur.execute(
+        """CREATE TABLE IF NOT EXISTS room_{}
+         (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL) """.format(room))
+    con.commit()
+    addUsers(room, [name1, name2])
+    joinRoom(name1, room)
+    joinRoom(name2, room)
+    con.close()

@@ -39,23 +39,40 @@ def register():
 def index():
     form = forms.ChatForm()
     allrooms = models.retrieveRooms()
+    users = models.retrieveUsers()
     if session.get('name'):
         rooms = models.usersRooms(session['name'])
         if request.method == 'POST':
-            room = session['room'] = form.room.data
+            if request.form.get('private'):
+                room = private(request.form.get('room'))
+            else:
+                room = session['room'] = form.room.data
+            print("\n\n", request.form.get('room'))
             return redirect(url_for('.chat', room=room))
         if request.method == 'GET':
             form.room.data = ''
             return render_template('index.html', form=form, allrooms=allrooms,
-                                   rooms=rooms, error=session.get('error'))
+                                   rooms=rooms, error=session.get('error'),
+                                   name=session.get('name'), users=users)
     error = 'Not logged in!'
     return render_template('login.html', form=forms.LoginForm, error=error)
+
+
+def private(room):
+    name1 = room
+    room = name1+'_' + \
+        session['name'] if name1 > session[
+            'name'] else session['name']+'_'+name1
+    print("\n\n", room, session['name'], name1, "\n\n")
+    models.createPrivateRoom(room, name1, session['name'])
+    return room
 
 
 @main.route('/chat/<room>/', methods=['GET', 'POST'])
 def chat(room):
     form = forms.ChatForm()
     if session.get('name'):
+        print("\n\nYes")
         if request.form.get('remove'):
             remove(room)
         if request.form.get('add'):

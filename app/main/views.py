@@ -15,7 +15,8 @@ def login():
             flash("Invalid Credentials", "error")
         else:
             session['name'] = name
-            return redirect(url_for('.index'))
+    if session.get('name'):
+        return redirect(url_for('.index'))
     return render_template('login.html')
 
 
@@ -31,6 +32,7 @@ def register():
             flash(error, "error")
             return render_template('register.html')
         session['name'] = name
+    if session.get('name'):
         return redirect(url_for('.index'))
     return render_template('register.html')
 

@@ -21,10 +21,8 @@
             <input type="password" placeholder="Password" name="password" value="{{request.form.password}}">
             <input class="btn btn-default" type="submit" value="Login">
         </form>
-        {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }} {% endif %}
-            <br>
-            <a href="{{url_for('main.register')}}" "> Register </a> 
+        <br>
+        <a href="{{url_for('main.register')}}" "> Register </a> 
     </div>
 </body>
 

@@ -8,16 +8,15 @@ from . import models
 @main.route('/', methods=['GET', 'POST'])
 def login():
     form = forms.LoginForm()
-    error = session.get('error')
     if request.method == 'POST':
         name = form.name.data
         password = str(form.password.data)
         if not models.validateUser(name, password):
-            error = 'Invalid Credentials.'
+            flash("Invalid Credentials", "error")
         else:
             session['name'] = name
             return redirect(url_for('.index'))
-    return render_template('login.html', error=error)
+    return render_template('login.html')
 
 
 @main.route('/register/', methods=['GET', 'POST'])
@@ -29,7 +28,8 @@ def register():
         password = sha256_crypt.encrypt((str(form.password.data)))
         error = models.registerUser(name, password)
         if error:
-            return render_template('register.html', error=error)
+            flash(error, "error")
+            return render_template('register.html')
         session['name'] = name
         return redirect(url_for('.index'))
     return render_template('register.html')
@@ -52,10 +52,10 @@ def index():
         if request.method == 'GET':
             form.room.data = ''
             return render_template('index.html', form=form, allrooms=allrooms,
-                                   rooms=rooms, error=session.get('error'),
-                                   name=session.get('name'), users=users)
-    error = 'Not logged in!'
-    return render_template('login.html', form=forms.LoginForm, error=error)
+                                   rooms=rooms, users=users,
+                                   name=session.get('name'))
+    flash("You are not logged in")
+    return render_template('login.html', form=forms.LoginForm)
 
 
 def private(room):
@@ -91,9 +91,9 @@ def chat(room):
                                    rooms=rooms, admin=admin, users=users,
                                    allusers=allusers)
         else:
-            session['error'] = 'Not a member of the room - {}'.format(room)
+            flash("Not a member of the room - {}".format(room), "error")
             return redirect(url_for('.index'))
-    session['error'] = 'You are not logged in!'
+    flash("You are not logged in", "error")
     return redirect(url_for('.login'))
 
 

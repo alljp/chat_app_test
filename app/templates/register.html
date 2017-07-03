@@ -5,11 +5,18 @@
 </head>
 
 <body>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
     <div class="container">
         <h4> Register</h4>
         <br>
         <form action="" method="POST">
-            <input type="text" placeholder="Username" name="name" value="{{request.form.name}}"> {% if error %} Username is already taken! {% endif %}
+            <input type="text" placeholder="Username" name="name" value="{{request.form.name}}">
             <input type="password" placeholder="Password" name="password" value="{{request.form.password}}">
             <input type="password" placeholder="Confirm Password" name="{{request.form.confirm}}">
             <input type="submit" value="Submit">

@@ -8,6 +8,13 @@
 </head>
 
 <body>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
     <div class="container">
         <br>
         <h4>Login:</h4>
@@ -17,11 +24,8 @@
             <input type="password" placeholder="Password" name="password" value="{{request.form.password}}">
             <input class="btn btn-default" type="submit" value="Login">
         </form>
-        {% if error %}
-        <p class="has-text-warning"><strong>Error:</strong> {{ error
- }} {% endif %}
-            <br>
-            <a href="{{url_for('main.register')}}" "> Register </a> 
+        <br>
+        <a href="{{url_for('main.register')}}" "> Register </a> 
     </div>
 </body>
 

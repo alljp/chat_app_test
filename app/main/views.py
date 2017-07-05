@@ -56,7 +56,7 @@ def index():
             return render_template('index.html', form=form, allrooms=allrooms,
                                    rooms=rooms, users=users,
                                    name=session.get('name'))
-    flash("You are not logged in")
+    flash("You are not logged in", "warning")
     return redirect(url_for('.login'))
 
 
@@ -93,9 +93,9 @@ def chat(room):
                                    rooms=rooms, admin=admin, users=users,
                                    allusers=allusers)
         else:
-            flash("Not a member of the room - {}".format(room), "error")
+            flash("Not a member of the room - {}".format(room), "warning")
             return redirect(url_for('.index'))
-    flash("You are not logged in", "error")
+    flash("You are not logged in", "warning")
     return redirect(url_for('.login'))
 
 
@@ -121,7 +121,7 @@ def add(room):
 @main.route('/logout', methods=['GET'])
 def logout():
     session.clear()
-    flash('You were successfully logged out')
+    flash('You have been successfully logged out', 'info')
     return redirect(url_for('.login'))
 
 

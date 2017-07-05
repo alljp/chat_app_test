@@ -3,8 +3,8 @@
 <head>
     <title>Chat App: {{ room }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/stylesheet/bulma.css" media="all"></link>
-    <link rel="stylesheet" href="/stylesheet/style.css"></link>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bulma.css') }}" media="all"></link>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}"></link>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
     let socket;
@@ -49,7 +49,7 @@
 
 <body>
     <h1>Chat App: {{ room }}</h1>
-    <textarea id="chat-'{{room}}'" cols="80" rows="25" disabled></textarea>
+    <textarea class="textarea" id="chat-'{{room}}'" cols="80" rows="25" disabled></textarea>
     {% for i in history %}
     <script>
     document.getElementById("chat-'{{room}}'").innerHTML += "{{ i }}" + "\n"
@@ -57,16 +57,16 @@
     {% endfor %}
     <br>
     <br>
-    <input id="text" size="70" placeholder="Enter your message here" autofocus="">
+    <input class="input" id="text" required size="70" placeholder="Enter your message here" autofocus="">
     <br>
     <a href="#" onclick="leave_room();">Leave this room</a>
     <br>
     <br>
-    <h4> Switch room </h4>
+    <h4 class="title is-4"> Switch room </h4>
     <form action="{{url_for('.index')}}" method="POST">
-        <label>Select :</label>
+        <label class="label">Select :</label>
         <br>
-        <select name="room" size=5 STYLE="width: 300px">
+        <select class="select is-medium" name="room" size=5 STYLE="width: 300px">
             {% for i in rooms %}
             <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
             <script>

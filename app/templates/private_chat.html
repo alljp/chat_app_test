@@ -1,15 +1,15 @@
-<h4>Private Chat</h4>
+<h4 class="title is-4">Private Chat</h4>
 <form name="privateForm" action="" method="POST">
-    <input type="hidden" name="private" value="true">
-    <label>Select User</label>
+    <input class="input" type="hidden" name="private" value="true">
+    <label class="label">Select User</label>
     <br>
-    <select name="room" size=5 STYLE="width:300px">
+    <select class="select is-medium" name="room" size=5 STYLE="width:300px">
         {% for i in users %}
         <option value="{{i}}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
         {% endfor %}
         <br>
     </select>
-    <input type='submit' value='Chat'>
+    <input class='button is-primary' type='submit' value='Chat'>
 </form>
 <!-- <script>
 function doSubmit() {

@@ -3,32 +3,28 @@
 <head>
     <title>Chat App - Home</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/stylesheet/bulma.css" media="all"></link>
-    <link rel="stylesheet" href="/stylesheet/style.css"></link>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bulma.css') }}" media="all"></link>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}"></link>
 </head>
 
 <body>
-    {% with messages = get_flashed_messages() %} {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %} {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+    <div class="isa_{{category}}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
     <h4>Select Room</h4>
     <form action="" method="POST">
         <br>
-        <label>Select :</label>
-        <select name="room" size=5 STYLE="width: 300px ">
+        <label class="label">Select :</label>
+        <select class="select is-medium" name="room" size=5 STYLE="width: 300px ">
             {% for i in rooms %}
             <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
             {% endfor %}
             <br> {{ form.submit() }}
     </form>
-    <a href="{{url_for('main.create_room')}}">Create Room </a>
+    <a class="button" href="{{url_for('main.create_room')}}">Create Room </a>
     <br>
     <br>
-    <a href="{{url_for( 'main.logout')}} "> Logout </a>
+    <a class="button" href="{{url_for( 'main.logout')}} "> Logout </a>
     <br> {% include 'private_chat.html' %}
 </body>
 

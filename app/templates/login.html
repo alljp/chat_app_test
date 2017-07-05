@@ -3,18 +3,14 @@
 <head>
     <title>Chat App - Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/stylesheet/bulma.css" media="all"></link>
-    <link rel="stylesheet" href="/stylesheet/style.css"></link>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bulma.css') }}" media="all"></link>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
 </head>
 
 <body>
-    {% with messages = get_flashed_messages() %} {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %} {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+    <div class="isa_{{category}}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
     <div class="container">
         <br>
         <h4>Login:</h4>
@@ -22,9 +18,11 @@
         <form action="" method="POST">
             <input type="text" placeholder="Username" name="name" value="{{request.form.name}}">
             <input type="password" placeholder="Password" name="password" value="{{request.form.password}}">
-            <input class="btn btn-default" type="submit" value="Login">
+            <br>
+            <br>
+            <input class="button is-primary" type="submit" value="Login">
         </form>
-        <br>
+        <br> New User?
         <a href="{{url_for('main.register')}}" "> Register </a> 
     </div>
 </body>

@@ -43,6 +43,14 @@
     });
 
 
+    var loadFile = function(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            socket.emit('image', reader.result)
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    };
+
     function leaveRoom() {
         socket.emit('left', {}, function() {
             socket.disconnect();
@@ -67,25 +75,27 @@
         autofocus="">
     <br>
     <div>
-        <a href="#" onclick="leaveRoom();">Leave this room</a>
-        <br>
-        <br>
-        <h4 class="title is-4"> Switch room </h4>
-        <form action="{{url_for('.index')}}" method="POST">
-            <label class="label">Select :</label>
+        <label class="label">Select a file: </label>
+        <input class="input" type="file" id="image" onchange="loadFile(event)">
+        <div>
+            <a href="#" onclick="leaveRoom();">Leave this room</a>
             <br>
-            <select class="select is-medium" name="room" size=5 STYLE="width: 300px">
-                {% for i in rooms %}
-                <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
-                <script>
-                console.log("{{i}}");
-                </script>
-                {% endfor %}
-                <br> {{ form.submit() }}
-            </select>
-        </form>
-    </div>
-    {% if admin %} {% include 'room_admin_view.html' %} {% endif %}
+            <br>
+            <h4 class="title is-4"> Switch room </h4>
+            <form action="{{url_for('.index')}}" method="POST">
+                <label class="label">Select :</label>
+                <br>
+                <select class="select is-medium" name="room" size=5 STYLE="width: 300px">
+                    {% for i in rooms %}
+                    <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+                    <script>
+                    console.log("{{i}}");
+                    </script>
+                    {% endfor %}
+                    <br> {{ form.submit() }}
+                </select>
+            </form>
+            {% if admin %} {% include 'room_admin_view.html' %} {% endif %}
 </body>
 
 </html>

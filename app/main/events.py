@@ -28,3 +28,11 @@ def left(message):
     msg = '< {} has left the room. >'.format(session.get('name'))
     emit('status', {'msg': msg}, room=room)
     storeMessage(msg, room)
+
+
+@socketio.on('image', namespace='/chat')
+def image(message):
+    room = session.get('room')
+    msg = '{}: {}'.format(session.get('name'), message)
+    emit('message', {'msg': msg}, room=room)
+    storeMessage(msg, room)

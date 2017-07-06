@@ -3,12 +3,14 @@
 <head>
     <title>Chat App - Login</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bulma.css') }}" media="all"></link>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bulma.css') }}"
+        media="all"></link>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
 </head>
 
 <body>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+    {% for category, message in messages %}
     <div class="isa_{{category}}">{{ message }}</div>
     {% endfor %} {% endif %} {% endwith %}
     <div class="container">

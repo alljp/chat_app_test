@@ -3,24 +3,29 @@
 <head>
     <title>Chat App: {{ room }}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bulma.css') }}" media="all"></link>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bulma.css') }}"
+        media="all"></link>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}"></link>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
     let socket;
-    socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+    socket = io.connect('http://' + document.domain + ':' + location.port +
+        '/chat');
     socket.on('connect', function() {
         socket.emit('joined', {});
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
+        document.getElementById("chat-'{{room}}'").scrollTop = document
+            .getElementById("chat-'{{room}}'").scrollHeight
         socket.on('status', function(data) {
-            document.getElementById("chat-'{{room}}'").innerHTML += data.msg + '\n';
+            document.getElementById("chat-'{{room}}'").innerHTML +=
+                data.msg + '\n';
             //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         });
         socket.on('message', function(data) {
-            document.getElementById("chat-'{{room}}'").innerHTML += data.msg + '\n';
+            document.getElementById("chat-'{{room}}'").innerHTML +=
+                data.msg + '\n';
             //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         });
 
@@ -37,7 +42,8 @@
         };
     });
 
-    function leave_room() {
+
+    function leaveRoom() {
         socket.emit('left', {}, function() {
             socket.disconnect();
 
@@ -57,25 +63,28 @@
     {% endfor %}
     <br>
     <br>
-    <input class="input" id="text" required size="70" placeholder="Enter your message here" autofocus="">
+    <input class="input" id="text" required size="70" placeholder="Enter your message here"
+        autofocus="">
     <br>
-    <a href="#" onclick="leave_room();">Leave this room</a>
-    <br>
-    <br>
-    <h4 class="title is-4"> Switch room </h4>
-    <form action="{{url_for('.index')}}" method="POST">
-        <label class="label">Select :</label>
+    <div>
+        <a href="#" onclick="leaveRoom();">Leave this room</a>
         <br>
-        <select class="select is-medium" name="room" size=5 STYLE="width: 300px">
-            {% for i in rooms %}
-            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
-            <script>
-            console.log("{{i}}");
-            </script>
-            {% endfor %}
-            <br> {{ form.submit() }}
-        </select>
-    </form>
+        <br>
+        <h4 class="title is-4"> Switch room </h4>
+        <form action="{{url_for('.index')}}" method="POST">
+            <label class="label">Select :</label>
+            <br>
+            <select class="select is-medium" name="room" size=5 STYLE="width: 300px">
+                {% for i in rooms %}
+                <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+                <script>
+                console.log("{{i}}");
+                </script>
+                {% endfor %}
+                <br> {{ form.submit() }}
+            </select>
+        </form>
+    </div>
     {% if admin %} {% include 'room_admin_view.html' %} {% endif %}
 </body>
 

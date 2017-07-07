@@ -63,12 +63,16 @@
 
 <body>
     <h1>Chat App: {{ room }}</h1>
-    <textarea class="textarea" id="chat-'{{room}}'" cols="80" rows="25" disabled></textarea>
-    {% for i in history %}
-    <script>
-    document.getElementById("chat-'{{room}}'").innerHTML += "{{ i }}" + "\n"
-    </script>
-    {% endfor %}
+    <div class="box" id="chat-'{{room}}'" contenteditable="false">
+        </textarea>
+        {% for i in history %}
+        <script>
+        document.getElementById("chat-'{{room}}'").innerHTML +=
+            '<p>{{ i }}</p>' +
+            "\n"
+        </script>
+        {% endfor %}
+    </div>
     <br>
     <br>
     <input class="input" id="text" required size="70" placeholder="Enter your message here"

@@ -35,4 +35,4 @@ def image(message):
     room = session.get('room')
     msg = '{}: {}'.format(session.get('name'), message)
     emit('message', {'msg': msg}, room=room)
-    storeMessage(msg, room)
+    storeMessage(msg, room, True)

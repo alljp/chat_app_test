@@ -68,7 +68,7 @@
         {% for i in history %}
         <script>
         document.getElementById("chat-'{{room}}'").innerHTML +=
-            '<p>{{ i }}</p>' +
+            '<p>{{ i[0] }}</p>' +
             "\n"
         </script>
         {% endfor %}

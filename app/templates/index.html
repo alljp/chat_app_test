@@ -9,25 +9,29 @@
 </head>
 
 <body>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
-    {% for category, message in messages %}
-    <div class="isa_{{category}}">{{ message }}</div>
-    {% endfor %} {% endif %} {% endwith %}
-    <h4>Select Room</h4>
-    <form action="" method="POST">
+    <div class="container">
+        {% with messages=get_flashed_messages(with_categories=true) %} {% if messages %}
+        {% for category, message in messages %}
+        <div class="isa_{{category}}">{{ message }}</div>
+        {% endfor %} {% endif %} {% endwith %}
+        <h4 class="title is-4">Select Room</h4>
+        <form action="" method="POST">
+            <br>
+            <label class="label">Select :</label>
+            <select class="select is-medium" name="room" size=10 STYLE="width: 300px ">
+                {% for i in rooms %}
+                <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+                {% endfor %}
+                <br>
+                <input type="submit" value="Enter Chatroom" class="button is-primary">
+        </form>
+        <a class="button is-primary" href="{{url_for('main.create_room')}}">Create Room </a>
         <br>
-        <label class="label">Select :</label>
-        <select class="select is-medium" name="room" size=5 STYLE="width: 300px ">
-            {% for i in rooms %}
-            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
-            {% endfor %}
-            <br> {{ form.submit() }}
-    </form>
-    <a class="button" href="{{url_for('main.create_room')}}">Create Room </a>
-    <br>
-    <br>
-    <a class="button" href="{{url_for( 'main.logout')}} "> Logout </a>
-    <br> {% include 'private_chat.html' %}
+        <br>
+        <a class="button is-primary" href="{{url_for( 'main.logout')}} "> Logout </a>
+        <br>
+        </select> {% include 'private_chat.html' %}
+        </form>
 </body>
 
 </html>

@@ -20,12 +20,12 @@
             .getElementById("chat-'{{room}}'").scrollHeight
         socket.on('status', function(data) {
             document.getElementById("chat-'{{room}}'").innerHTML +=
-                data.msg + '\n';
+                '<' + data.msg + '>\n';
             //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         });
         socket.on('message', function(data) {
             document.getElementById("chat-'{{room}}'").innerHTML +=
-                data.msg + '\n';
+                data.user + ': ' + data.msg + '\n';
             //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         });
 
@@ -46,7 +46,9 @@
     var loadFile = function(event) {
         var reader = new FileReader();
         reader.onload = function() {
-            socket.emit('image', reader.result)
+            socket.emit('image', {
+                msg: reader.result
+            })
         };
         reader.readAsDataURL(event.target.files[0]);
     };
@@ -66,13 +68,19 @@
         <h1>Chat App: {{ room }}</h1>
         <div class="box" id="chat-'{{room}}'" contenteditable="false">
             </textarea>
-            {% for i in history %}
+            {% for i in history %} {% if i[2]!='Image' %}
             <script>
             document.getElementById("chat-'{{room}}'").innerHTML +=
-                '<p>{{ i[0] }}</p>' +
+                '<p>{{i[1]}}: {{ i[0] }}</p>' +
                 "\n"
             </script>
-            {% endfor %}
+            {% else %}
+            <script>
+            document.getElementById("chat-'{{room}}'").innerHTML +=
+                '<p>{{i[1]}}:</p> <img src="{{ i[0] }}">' +
+                "\n"
+            </script>
+            {% endif %} {% endfor %}
         </div>
         <br>
         <br>

@@ -53,22 +53,19 @@ def retrieveRooms():
     return rooms_list
 
 
-def storeMessage(msg, room, image=False):
+def storeMessage(msg, user, room, msg_type="Text"):
     con, cur = connect(db)
-    if not image:
-        cur.execute("INSERT INTO History (message, room) VALUES (?,?)",
-                    (msg, room))
-    else:
-        cur.execute(
-            "INSERT INTO History (message, room, type) VALUES (?,?,?)",
-            (msg, room, "Image"))
+    cur.execute(
+        "INSERT INTO History (message, user, room, type) VALUES (?,?,?,?)",
+        (msg, user, room, msg_type))
     con.commit()
     con.close()
 
 
 def retrieveHistory(room):
     con, cur = connect(db)
-    cur.execute("SELECT message, type FROM History WHERE room = ?", (room, ))
+    cur.execute(
+        "SELECT message, user, type FROM History WHERE room = ?", (room, ))
     msgs = cur.fetchall()
     con.close()
     return msgs

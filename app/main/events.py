@@ -37,6 +37,6 @@ def left(message):
 def image(message):
     room = session.get('room')
     msg = '<img src = "{}">'.format(message['msg'])
-    emit('message', {'msg': msg,
-                     'user': session.get('name')}, room=room)
+    emit('image', {'msg': message['msg'],
+                   'user': session.get('name')}, room=room)
     storeMessage(message['msg'], session.get('name'), room, "Image")

@@ -29,6 +29,14 @@
             //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
         });
 
+        socket.on('image', function(data) {
+            chatArea.innerHTML += "<p>" + data.user + ": " +
+                data.msg + "</p>"
+            document.getElementById("chat-'{{room}}'").scrollTop =
+                document.getElementById("chat-'{{room}}'").scrollHeight
+
+        })
+
         document.onkeydown = function(e) {
             let code = e.keyCode;
             if (code == 13) {

@@ -21,19 +21,28 @@
         socket.on('status', function(data) {
             document.getElementById("chat-'{{room}}'").innerHTML +=
                 '<' + data.msg + '>\n';
-            //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
+            document.getElementById("chat-'{{room}}'").scrollTop =
+                document.getElementById("chat-'{{room}}'").scrollHeight
         });
         socket.on('message', function(data) {
-            document.getElementById("chat-'{{room}}'").innerHTML +=
-                data.user + ': ' + data.msg + '\n';
-            //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
+            var chatArea = document.getElementById(
+                "chat-'{{room}}'");
+            var para = document.createElement("P");
+            var t = document.createTextNode(
+                data.user + ': ' + data.msg + '\n');
+            para.appendChild(t);
+            chatArea.appendChild(para);
+            chatArea.scrollTop = chatArea.scrollHeight
         });
 
         socket.on('image', function(data) {
-            chatArea.innerHTML += "<p>" + data.user + ": " +
-                data.msg + "</p>"
-            document.getElementById("chat-'{{room}}'").scrollTop =
-                document.getElementById("chat-'{{room}}'").scrollHeight
+            var chatArea = document.getElementById(
+                "chat-'{{room}}'");
+            var d = document.createElement("div");
+            d.innerHTML = '<p>' + data.user + ": " +
+                '<img src="' + data.msg + '"> </p>'
+            chatArea.appendChild(d)
+            chatArea.scrollTop = chatArea.scrollHeight
 
         })
 

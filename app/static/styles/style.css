@@ -1,8 +1,13 @@
-.box {
+.chatbox {
     overflow-y: scroll;
     overflow-x: hidden;
-    max-height: 250px;
-    width: 50%;
+    max-height: 300px;
+    width: 63%;
+    color: #555;
+    float: left;
+    display: block;
+    color: #555;
+    width: 100%;
 }
 
 .isa_info,
@@ -31,4 +36,27 @@
 .isa_error {
     color: #D8000C;
     background-color: #FFBABA;
+}
+
+#overlay-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+    z-index: 5;
+    display: none;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: none;
 }

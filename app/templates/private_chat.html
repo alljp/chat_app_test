@@ -1,37 +1,14 @@
-<h4 class="title is-4">Private Chat</h4>
+<h4 class="title is-4" STYLE="color: #555">Private Chat</h4>
 <form name="privateForm" action="" method="POST">
     <input class="input" type="hidden" name="private" value="true">
-    <label class="label">Select User</label>
+    <label class="label ">Select User</label>
     <br>
-    <select class="select is-medium" name="room" size=5 STYLE="width:300px">
+    <select class="select is-medium" name="room" multiple size=5 STYLE="width:600px;
+    height:200px">
         {% for i in users %}
         <option value="{{i}}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
         {% endfor %}
         <br>
     </select>
-    <input class='button is-primary' type='submit' value='Chat'>
+    <input class='button is-primary' type='submit' value='Chat' STYLE="float:right">
 </form>
-<!-- <script>
-function doSubmit() {
-    var name1 = document.getElementById("room").value;
-    console.log(name1);
-    room = name1 > name ? name + '_' + name1 name1 + '_' + name;
-    room = 'room_' + room;
-    console.log(room);
-    document.privateForm.room = room;
-    return True
-}
-console.log("Blah")
-window.onload = function() {
-    console.log("Hi there!")
-    document.getElementById('privateForm').onsubmit = function() {
-        var e = document.getElementById('room');
-        name1 = e.options[e.selectedIndex].value;
-        room = name1 > name ? name + '_' + name1 name1 + '_' + name;
-        room = 'room_' + room;
-        console.log(room);
-        e.options[e.selectedIndex].value = room;
-    };
-};​
-</script>
- -->

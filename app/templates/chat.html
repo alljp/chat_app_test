@@ -77,56 +77,132 @@
             window.location.href = "{{ url_for('.index') }}";
         });
     }
+
+    function adminactions() {
+        console.log("REached")
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('overlay-back').style.display = 'block';
+    }
     </script>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Chat App: {{ room }}</h1>
-        <div class="box" id="chat-'{{room}}'" contenteditable="false">
-            </textarea>
-            {% for i in history %} {% if i[2]!='Image' %}
-            <script>
-            document.getElementById("chat-'{{room}}'").innerHTML +=
-                '<p>{{i[1]}}: {{ i[0] }}</p>' +
-                "\n"
-            </script>
-            {% else %}
-            <script>
-            document.getElementById("chat-'{{room}}'").innerHTML +=
-                '<p>{{i[1]}}:</p> <img src="{{ i[0] }}">' +
-                "\n"
-            </script>
-            {% endif %} {% endfor %}
+    <section class="hero is-info is-fullheight">
+        <!-- Hero header: will stick at the top -->
+        <div class="hero-head">
+            <header class="nav">
+                <div class="container">
+                    <div class="nav-left">
+                        <a class="nav-item" href=#>
+                            <h1 class="title">Chat App: {{ room }}</h1>
+                        </a>
+                    </div>
+                    <div class="nav-right nav-menu">
+                        <a class="nav-item is-active" href="{{url_for('main.index')}}">
+            Home
+          </a> {% if admin %}
+                        <a id="adminactions" class="nav-item is-active" onclick="adminactions()">
+            Admin Actions
+          </a> {% endif %}
+                        <a class="nav-item is-active" href="{{url_for('main.create_room')}}">
+            Create-Room
+          </a>
+                        <span class="nav-item">
+            <a class="button is-danger is-inverted" href="{{url_for('main.logout')}}">
+                    Logout
+                    </a>
+                    </span>
+                    </div>
+                </div>
+            </header>
         </div>
-        <br>
-        <br>
-        <input class="input" id="text" required size="70" placeholder="Enter your message here"
-            autofocus="">
-        <br>
-        <div>
-            <label class="label">Select a file: </label>
-            <input class="input" type="file" id="image" onchange="loadFile(event)">
-            <div>
-                <a href="#" onclick="leaveRoom();">Leave this room</a>
+        <div class="hero-body">
+            <div class="box is-flex" STYLE="display:block; width:70%">
+                <div class="chatbox box" STYLE="width: 100%" id="chat-'{{room}}'" contenteditable="false">
+                    {% for i in history %} {% if i[2]!='Image' %}
+                    <script>
+                    document.getElementById("chat-'{{room}}'").innerHTML +=
+                        '<p>{{i[1]}}: {{ i[0] }}</p>' + "\n"
+                    </script>
+                    {% else %}
+                    <script>
+                    document.getElementById("chat-'{{room}}'").innerHTML +=
+                        '<p>{{i[1]}}:</p> <img src="{{ i[0] }} ">' + "\n"
+                    </script>
+                    {% endif %} {% endfor %}
+                </div>
                 <br>
-                <br>
-                <h4 class="title is-4"> Switch room </h4>
+                <input class="input" id="text" required size="70" placeholder="Enter your message here"
+                    autofocus="">
+            </div>
+            <div class="box is-flex" STYLE="display: block; float: right; width: 30%">
+                <h4 class="title is-4" STYLE="color: #555 ">Switch Room</h4>
                 <form action="{{url_for('.index')}}" method="POST">
                     <label class="label">Select :</label>
                     <br>
-                    <select class="select is-medium" name="room" size=5 STYLE="width: 300px">
+                    <select class="select is-medium" name="room" multiple size="5
+                    " STYLE="width: 600px; height: 200px ">
                         {% for i in rooms %}
                         <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
                         <script>
                         console.log("{{i}}");
                         </script>
                         {% endfor %}
+                        <br>
+                        <input class="button is-primary" type="submit" value="Enter Room" STYLE="float: right"> </select>
+                </form>
+            </div>
+        </div>
+    </section>
+    <div id="overlay-back"></div>
+    <div id="overlay"><span>{% if admin %}{% include 'room_admin_view.html' %} {% endif %}</span></div>
+    <!-- <h1>Chat App: {{ room }}</h1>
+        <div class="chatbox box " id="chat- '{{room}}' " contenteditable="false ">
+            </textarea>
+            {% for i in history %} {% if i[2]!='Image' %}
+            <script>
+            document.getElementById("chat- '{{room}}' ").innerHTML +=
+                '<p>{{i[1]}}: {{ i[0] }}</p>' +
+                "\n "
+            </script>
+            {% else %}
+            <script>
+            document.getElementById("chat- '{{room}}' ").innerHTML +=
+                '<p>{{i[1]}}:</p> <img src="{{ i[0] }} ">' +
+                "\n "
+            </script>
+            {% endif %} {% endfor %}
+        </div>
+        <br>
+        <br>
+        <input class="input " id="text " required size="70 " placeholder="Enter
+                    your message here "
+            autofocus=" ">
+        <br>
+        <div>
+            <label class="label ">Select a file: </label>
+            <input class="input " type="file " id="image " onchange="loadFile(event) ">
+            <div>
+                <a href="# " onclick="leaveRoom(); ">Leave this room</a>
+                <br>
+                <br>
+                <h4 class="title is-4 "> Switch room </h4>
+                <form action="{{url_for( '.index')}} " method="POST ">
+                    <label class="label ">Select :</label>
+                    <br>
+                    <select class="select is-medium " name="room
+                    " size=5 STYLE="width: 300px ">
+                        {% for i in rooms %}
+                        <option value="{{ i }} " {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+                        <script>
+                        console.log("{{i}} ");
+                        </script>
+                        {% endfor %}
                         <br> {{ form.submit() }}
                     </select>
                 </form>
                 {% if admin %} {% include 'room_admin_view.html' %} {% endif %}
-            </div>
+            </div> -->
 </body>
 
 </html>

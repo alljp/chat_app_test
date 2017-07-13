@@ -9,29 +9,74 @@
 </head>
 
 <body>
-    <div class="container">
-        {% with messages=get_flashed_messages(with_categories=true) %} {% if messages %}
-        {% for category, message in messages %}
-        <div class="isa_{{category}}">{{ message }}</div>
-        {% endfor %} {% endif %} {% endwith %}
-        <h4 class="title is-4">Select Room</h4>
-        <form action="" method="POST">
-            <br>
-            <label class="label">Select :</label>
-            <select class="select is-medium" name="room" size=10 STYLE="width: 300px ">
-                {% for i in rooms %}
-                <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
-                {% endfor %}
-                <br>
-                <input type="submit" value="Enter Chatroom" class="button is-primary">
-        </form>
-        <a class="button is-primary" href="{{url_for('main.create_room')}}">Create Room </a>
-        <br>
-        <br>
-        <a class="button is-primary" href="{{url_for( 'main.logout')}} "> Logout </a>
-        <br>
-        </select> {% include 'private_chat.html' %}
-        </form>
+    {% with messages=get_flashed_messages(with_categories=true) %} {% if messages %}
+    {% for category, message in messages %}
+    <div class="isa_{{category}}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+    <section class="hero is-info is-fullheight">
+        <!-- Hero header: will stick at the top -->
+        <div class="hero-head">
+            <header class="nav">
+                <div class="container">
+                    <div class="nav-left">
+                        <a class="nav-item" href=#>
+                            <h1 class="title">Chat App</h1>
+                        </a>
+                    </div>
+                    <div class="nav-right nav-menu">
+                        <a class="nav-item is-active" href="#">
+            Home
+          </a>
+                        <a class="nav-item is-active" href="{{url_for('main.create_room')}}">
+            Create-Room
+          </a>
+                        <span class="nav-item">
+            <a class="button is-danger is-inverted" href="{{url_for('main.logout')}}">
+                    Logout
+                    </a>
+                    </span>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <!-- Hero content: will be in the middle -->
+        <div class="hero-body">
+            <section>
+                <div class="box is-flex" STYLE="display: block">
+                    {% include 'private_chat.html' %}
+                </div>
+            </section>
+            <section>
+                <div class="box is-flex" STYLE="display: block">
+                    <h4 class="title is-4" STYLE="color: #555">Select Room</h4>
+                    <form action="" method="POST">
+                        <label class="label">Select :</label>
+                        <br>
+                        <select class="select is-medium" name="room" multiple size="5" STYLE="width: 600px; height: 200px">
+                            {% for i in rooms %}
+                            <option value="{{i}}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+                            {% endfor %}
+                            <br>
+                        </select>
+                        <input type="submit" value="Enter Chatroom" class="button is-primary" STYLE="float:right">
+                    </form>
+                </div>
+            </section>
+        </div>
+        <!-- Hero footer: will stick at the bottom -->
+        <!-- <div class="hero-foot">
+    <nav class="tabs is-boxed is-fullwidth">
+        <div class="container">
+            <ul>
+                <li class="is-active"><a>Overview</a></li>
+                <li><a>Modifiers</a></li>
+                <li><a>Grid</a></li>
+                <li><a>Elements</a></li>
+                <li><a>Components</a></li>
+                <li><a>Layout</a></li>
+            </ul>
+        </div>
+    </nav></div>
+-->
+    </section>
 </body>
-
-</html>

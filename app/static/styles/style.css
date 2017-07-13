@@ -44,8 +44,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: #000;
-    opacity: 0.6;
+    background: #777;
+    opacity: 10;
     filter: alpha(opacity=60);
     z-index: 5;
     display: none;

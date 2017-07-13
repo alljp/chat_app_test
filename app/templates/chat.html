@@ -25,22 +25,39 @@
                 document.getElementById("chat-'{{room}}'").scrollHeight
         });
         socket.on('message', function(data) {
-            var chatArea = document.getElementById(
+            let chatArea = document.getElementById(
                 "chat-'{{room}}'");
-            var para = document.createElement("P");
-            var t = document.createTextNode(
-                data.user + ': ' + data.msg + '\n');
-            para.appendChild(t);
-            chatArea.appendChild(para);
+            let d = document.createElement("div");
+            if ('{{name}}' == data.user) {
+                d.innerHTML =
+                    '<div STYLE="background-color:black;color:white;padding:10px;"><p>' +
+                    data.user + ": " + data.msg +
+                    '</p></div>'
+            } else {
+                d.innerHTML =
+                    '<div STYLE="background-color:white;color:black;padding:10px;"><p>' +
+                    data.user + ": " + data.msg +
+                    '</p></div>'
+            }
+            chatArea.appendChild(d)
             chatArea.scrollTop = chatArea.scrollHeight
         });
 
         socket.on('image', function(data) {
-            var chatArea = document.getElementById(
+            let chatArea = document.getElementById(
                 "chat-'{{room}}'");
-            var d = document.createElement("div");
-            d.innerHTML = '<p>' + data.user + ": " +
-                '<img src="' + data.msg + '"> </p>'
+            let d = document.createElement("div");
+            if ('{{name}}' == data.user) {
+                d.innerHTML =
+                    '<div STYLE="background-color:black;color:white;padding:10px;"><p>' +
+                    data.user + ": " +
+                    '<img src="' + data.msg + '"> </p></div>'
+            } else {
+                d.innerHTML =
+                    '<div STYLE="background-color:white;color:black;padding:10px;"><p>' +
+                    data.user + ": " +
+                    '<img src="' + data.msg + '"> </p></div>'
+            }
             chatArea.appendChild(d)
             chatArea.scrollTop = chatArea.scrollHeight
 
@@ -78,10 +95,15 @@
         });
     }
 
-    function adminactions() {
+    function adminActions() {
         console.log("REached")
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('overlay-back').style.display = 'block';
+    }
+
+    function closediv() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('overlay-back').style.display = 'none';
     }
     </script>
 </head>
@@ -101,7 +123,7 @@
                         <a class="nav-item is-active" href="{{url_for('main.index')}}">
             Home
           </a> {% if admin %}
-                        <a id="adminactions" class="nav-item is-active" onclick="adminactions()">
+                        <a class="nav-item is-active" onclick="adminActions()">
             Admin Actions
           </a> {% endif %}
                         <a class="nav-item is-active" href="{{url_for('main.create_room')}}">
@@ -121,19 +143,23 @@
                 <div class="chatbox box" STYLE="width: 100%" id="chat-'{{room}}'" contenteditable="false">
                     {% for i in history %} {% if i[2]!='Image' %}
                     <script>
-                    document.getElementById("chat-'{{room}}'").innerHTML +=
-                        '<p>{{i[1]}}: {{ i[0] }}</p>' + "\n"
+                    if ("{{i[2]}}" != 'Status') {
+                        document.getElementById("chat-'{{room}}'").innerHTML +=
+                            '<p>{{i[1]}}: {{ i[0] }}</p>' + "\n"
+                    }
                     </script>
                     {% else %}
                     <script>
                     document.getElementById("chat-'{{room}}'").innerHTML +=
-                        '<p>{{i[1]}}:</p> <img src="{{ i[0] }} ">' + "\n"
+                        '<p>{{i[1]}}:</p> <img src="{{i[0]}} ">' + "\n"
                     </script>
                     {% endif %} {% endfor %}
                 </div>
                 <br>
                 <input class="input" id="text" required size="70" placeholder="Enter your message here"
                     autofocus="">
+                <label class="label">Select a file: </label>
+                <input class="input" type="file" id="image" onchange="loadFile(event)">
             </div>
             <div class="box is-flex" STYLE="display: block; float: right; width: 30%">
                 <h4 class="title is-4" STYLE="color: #555 ">Switch Room</h4>
@@ -155,7 +181,10 @@
         </div>
     </section>
     <div id="overlay-back"></div>
-    <div id="overlay"><span>{% if admin %}{% include 'room_admin_view.html' %} {% endif %}</span></div>
+    <div id="overlay">
+        <span class="block">{% if admin %}
+     {% include 'room_admin_view.html' %} {% endif %}</span>
+    </div>
     <!-- <h1>Chat App: {{ room }}</h1>
         <div class="chatbox box " id="chat- '{{room}}' " contenteditable="false ">
             </textarea>

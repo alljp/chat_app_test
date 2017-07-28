@@ -2,24 +2,66 @@
 
 <head>
     <title>Chat App: {{ room }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bulma.css') }}"
+        media="all"></link>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}"></link>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
     let socket;
-    socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+    socket = io.connect('http://' + document.domain + ':' + location.port +
+        '/chat');
     socket.on('connect', function() {
         socket.emit('joined', {});
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
+        document.getElementById("chat-'{{room}}'").scrollTop = document
+            .getElementById("chat-'{{room}}'").scrollHeight
         socket.on('status', function(data) {
-            document.getElementById("chat-'{{room}}'").innerHTML += data.msg + '\n';
-            //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
+            document.getElementById("chat-'{{room}}'").innerHTML +=
+                '<' + data.msg + '>\n';
+            document.getElementById("chat-'{{room}}'").scrollTop =
+                document.getElementById("chat-'{{room}}'").scrollHeight
         });
         socket.on('message', function(data) {
-            document.getElementById("chat-'{{room}}'").innerHTML += data.msg + '\n';
-            //document.getElementById("chat-'{{room}}'").scrollTop = document.getElementById("chat-'{{room}}'").scrollHeight
+            let chatArea = document.getElementById(
+                "chat-'{{room}}'");
+            let d = document.createElement("div");
+            if ('{{name}}' == data.user) {
+                d.innerHTML =
+                    '<div STYLE="background-color:black;color:white;padding:10px;"><p>' +
+                    data.user + ": " + data.msg +
+                    '</p></div>'
+            } else {
+                d.innerHTML =
+                    '<div STYLE="background-color:white;color:black;padding:10px;"><p>' +
+                    data.user + ": " + data.msg +
+                    '</p></div>'
+            }
+            chatArea.appendChild(d)
+            chatArea.scrollTop = chatArea.scrollHeight
         });
+
+        socket.on('image', function(data) {
+            let chatArea = document.getElementById(
+                "chat-'{{room}}'");
+            let d = document.createElement("div");
+            if ('{{name}}' == data.user) {
+                d.innerHTML =
+                    '<div STYLE="background-color:black;color:white;padding:10px;"><p>' +
+                    data.user + ": " +
+                    '<img src="' + data.msg + '"> </p></div>'
+            } else {
+                d.innerHTML =
+                    '<div STYLE="background-color:white;color:black;padding:10px;"><p>' +
+                    data.user + ": " +
+                    '<img src="' + data.msg + '"> </p></div>'
+            }
+            chatArea.appendChild(d)
+            chatArea.scrollTop = chatArea.scrollHeight
+
+        })
 
         document.onkeydown = function(e) {
             let code = e.keyCode;
@@ -34,43 +76,162 @@
         };
     });
 
-    function leave_room() {
+
+    var loadFile = function(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            socket.emit('image', {
+                msg: reader.result
+            })
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    };
+
+    function leaveRoom() {
         socket.emit('left', {}, function() {
             socket.disconnect();
 
             window.location.href = "{{ url_for('.index') }}";
         });
     }
+
+    function adminActions() {
+        console.log("REached")
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('overlay-back').style.display = 'block';
+    }
+
+    function closediv() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('overlay-back').style.display = 'none';
+    }
     </script>
 </head>
 
 <body>
-    <h1>Chat App: {{ room }}</h1>
-    <textarea id="chat-'{{room}}'" cols="80" rows="25" disabled></textarea>
-    {% for i in history %}
-    <script>
-    document.getElementById("chat-'{{room}}'").innerHTML += "{{ i }}" + "\n"
-    </script>
-    {% endfor %}
-    <br>
-    <br>
-    <input id="text" size="70" placeholder="Enter your message here" autofocus="">
-    <br>
-    <a href="#" onclick="leave_room();">Leave this room</a>
-    <br>
-    <br>
-    <h4> Switch room </h4>
-    <form action="{{url_for('.index')}}" method="POST">
-        <label>Select :</label>
-        <select name="room" size=5 STYLE="width: 300px">
-            {% for i in rooms %}
-            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+    <section class="hero is-info is-fullheight">
+        <!-- Hero header: will stick at the top -->
+        <div class="hero-head">
+            <header class="nav">
+                <div class="container">
+                    <div class="nav-left">
+                        <a class="nav-item" href=#>
+                            <h1 class="title">Chat App: {{ room }}</h1>
+                        </a>
+                    </div>
+                    <div class="nav-right nav-menu">
+                        <a class="nav-item is-active" href="{{url_for('main.index')}}">
+            Home
+          </a> {% if admin %}
+                        <a class="nav-item is-active" onclick="adminActions()">
+            Admin Actions
+          </a> {% endif %}
+                        <a class="nav-item is-active" href="{{url_for('main.create_room')}}">
+            Create-Room
+          </a>
+                        <span class="nav-item">
+            <a class="button is-danger is-inverted" href="{{url_for('main.logout')}}">
+                    Logout
+                    </a>
+                    </span>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="hero-body">
+            <div class="box is-flex" STYLE="display:block; width:70%">
+                <div class="chatbox box" STYLE="width: 100%" id="chat-'{{room}}'" contenteditable="false">
+                    {% for i in history %} {% if i[2]!='Image' %}
+                    <script>
+                    if ("{{i[2]}}" != 'Status') {
+                        document.getElementById("chat-'{{room}}'").innerHTML +=
+                            '<p>{{i[1]}}: {{ i[0] }}</p>' + "\n"
+                    }
+                    </script>
+                    {% else %}
+                    <script>
+                    document.getElementById("chat-'{{room}}'").innerHTML +=
+                        '<p>{{i[1]}}:</p> <img src="{{i[0]}} ">' + "\n"
+                    </script>
+                    {% endif %} {% endfor %}
+                </div>
+                <br>
+                <input class="input" id="text" required size="70" placeholder="Enter your message here"
+                    autofocus="">
+                <label class="label">Select a file: </label>
+                <input class="input" type="file" id="image" onchange="loadFile(event)">
+            </div>
+            <div class="box is-flex" STYLE="display: block; float: right; width: 30%">
+                <h4 class="title is-4" STYLE="color: #555 ">Switch Room</h4>
+                <form action="{{url_for('.index')}}" method="POST">
+                    <label class="label">Select :</label>
+                    <br>
+                    <select class="select is-medium" name="room" multiple size="5
+                    " STYLE="width: 600px; height: 200px ">
+                        {% for i in rooms %}
+                        <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+                        <script>
+                        console.log("{{i}}");
+                        </script>
+                        {% endfor %}
+                        <br>
+                        <input class="button is-primary" type="submit" value="Enter Room" STYLE="float: right"> </select>
+                </form>
+            </div>
+        </div>
+    </section>
+    <div id="overlay-back"></div>
+    <div id="overlay">
+        <span class="block">{% if admin %}
+     {% include 'room_admin_view.html' %} {% endif %}</span>
+    </div>
+    <!-- <h1>Chat App: {{ room }}</h1>
+        <div class="chatbox box " id="chat- '{{room}}' " contenteditable="false ">
+            </textarea>
+            {% for i in history %} {% if i[2]!='Image' %}
             <script>
-            console.log("{{i}}");
+            document.getElementById("chat- '{{room}}' ").innerHTML +=
+                '<p>{{i[1]}}: {{ i[0] }}</p>' +
+                "\n "
             </script>
-            {% endfor %}
-            <br> {{ form.submit() }}
-    </form>
+            {% else %}
+            <script>
+            document.getElementById("chat- '{{room}}' ").innerHTML +=
+                '<p>{{i[1]}}:</p> <img src="{{ i[0] }} ">' +
+                "\n "
+            </script>
+            {% endif %} {% endfor %}
+        </div>
+        <br>
+        <br>
+        <input class="input " id="text " required size="70 " placeholder="Enter
+                    your message here "
+            autofocus=" ">
+        <br>
+        <div>
+            <label class="label ">Select a file: </label>
+            <input class="input " type="file " id="image " onchange="loadFile(event) ">
+            <div>
+                <a href="# " onclick="leaveRoom(); ">Leave this room</a>
+                <br>
+                <br>
+                <h4 class="title is-4 "> Switch room </h4>
+                <form action="{{url_for( '.index')}} " method="POST ">
+                    <label class="label ">Select :</label>
+                    <br>
+                    <select class="select is-medium " name="room
+                    " size=5 STYLE="width: 300px ">
+                        {% for i in rooms %}
+                        <option value="{{ i }} " {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+                        <script>
+                        console.log("{{i}} ");
+                        </script>
+                        {% endfor %}
+                        <br> {{ form.submit() }}
+                    </select>
+                </form>
+                {% if admin %} {% include 'room_admin_view.html' %} {% endif %}
+            </div> -->
 </body>
 
 </html>

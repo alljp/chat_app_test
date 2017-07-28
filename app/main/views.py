@@ -8,16 +8,16 @@ from . import models
 @main.route('/', methods=['GET', 'POST'])
 def login():
     form = forms.LoginForm()
-    error = None
     if request.method == 'POST':
         name = form.name.data
         password = str(form.password.data)
         if not models.validateUser(name, password):
-            error = 'Invalid Credentials.'
+            flash("Invalid Credentials", "error")
         else:
             session['name'] = name
-            return redirect(url_for('.index'))
-    return render_template('login.html', error=error)
+    if session.get('name'):
+        return redirect(url_for('.index'))
+    return render_template('login.html')
 
 
 @main.route('/register/', methods=['GET', 'POST'])
@@ -27,9 +27,12 @@ def register():
         print("Success")
         name = form.name.data
         password = sha256_crypt.encrypt((str(form.password.data)))
-        models.registerUser(name, password)
-        # session['logged_in'] = True
+        error = models.registerUser(name, password)
+        if error:
+            flash(error, "error")
+            return render_template('register.html')
         session['name'] = name
+    if session.get('name'):
         return redirect(url_for('.index'))
     return render_template('register.html')
 
@@ -38,42 +41,103 @@ def register():
 def index():
     form = forms.ChatForm()
     allrooms = models.retrieveRooms()
+    users = models.retrieveUsers()
     if session.get('name'):
         rooms = models.usersRooms(session['name'])
         if request.method == 'POST':
-            room = session['room'] = form.room.data
+            if request.form.get('private'):
+                room = private(request.form.get('room'))
+            else:
+                room = session['room'] = form.room.data
+            print("\n\n", request.form.get('room'))
             return redirect(url_for('.chat', room=room))
         if request.method == 'GET':
             form.room.data = ''
             return render_template('index.html', form=form, allrooms=allrooms,
-                                   rooms=rooms, error=session.get('error'))
-    return render_template('login.html', form=LoginForm)
+                                   rooms=rooms, users=users,
+                                   name=session.get('name'))
+    flash("You are not logged in", "warning")
+    return redirect(url_for('.login'))
+
+
+def private(room):
+    name1 = room
+    room = name1+'_' + \
+        session['name'] if name1 > session[
+            'name'] else session['name']+'_'+name1
+    print("\n\n", room, session['name'], name1, "\n\n")
+    models.createPrivateRoom(room, name1, session['name'])
+    return room
 
 
 @main.route('/chat/<room>/', methods=['GET', 'POST'])
 def chat(room):
     form = forms.ChatForm()
-    name = session.get('name', '')
-    room = room
-    rooms = models.usersRooms(name)
-    if request.method == 'POST':
-        if name == '':
-            return redirect(url_for('.login'))
-        if room == '':
+    if session.get('name'):
+        print("\n\nYes")
+        if request.form.get('remove'):
+            remove(room)
+        if request.form.get('add'):
+            add(room)
+        if request.form.get('delete'):
+            models.deleteRoom(room)
             return redirect(url_for('.index'))
-        return render_template('chat.html', name=name, room=room,
-                               history=history, form=form, rooms=rooms)
-    if name and room in rooms:
-        history = models.retrieveHistory(room)
-        return render_template('chat.html', history=history,
-                               form=form, rooms=rooms)
-    else:
-        session['error'] = "Not a member of the room - {}".format(room)
-        return redirect(url_for('.index'))
+        rooms = models.usersRooms(session['name'])
+        if room in rooms:
+            admin = session.get('name') == models.getAdmin(room)
+            users = models.roomsUsers(room) if admin else None
+            allusers = models.retrieveUsers() if admin else None
+            history = models.retrieveHistory(room)
+            return render_template('chat.html', name=session.get('name'),
+                                   room=room, history=history, form=form,
+                                   rooms=rooms, admin=admin, users=users,
+                                   allusers=allusers)
+        else:
+            flash("Not a member of the room - {}".format(room), "warning")
+            return redirect(url_for('.index'))
+    flash("You are not logged in", "warning")
     return redirect(url_for('.login'))
+
+
+def remove(room):
+    print("Remove")
+    users = request.form.getlist('users')
+    print(users)
+    for user in users:
+        print(user)
+        models.leaveRoom(user, room)
+    models.removeUsers(room, users)
+    return redirect(url_for('.chat', room=room))
+
+
+def add(room):
+    users = request.form.getlist('users')
+    for user in users:
+        models.joinRoom(user, room)
+    models.addUsers(room, users)
+    return redirect(url_for('.chat', room=room))
 
 
 @main.route('/logout', methods=['GET'])
 def logout():
     session.clear()
+    flash('You have been successfully logged out', 'info')
+    return redirect(url_for('.login'))
+
+
+@main.route('/create-room/', methods=['GET', 'POST'])
+def create_room():
+    if session.get('name'):
+        if request.method == 'POST':
+            room = request.form.get('room')
+            users = request.form.getlist('users')
+            for user in users:
+                models.joinRoom(user, room)
+            models.createRoom(room, session['name'])
+            models.addUsers(room, users)
+            return ("<p>Room-{} created</p>".format(room))
+
+        else:
+            users = models.retrieveUsers()
+            return render_template('create_room.html', users=users)
     return redirect(url_for('.login'))

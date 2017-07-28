@@ -1,0 +1,39 @@
+<br>
+<br>
+<br>
+<div class="notification is-info">
+    Admin Actions
+    <button class="delete is-small" onclick="closediv()"></button>
+</div>
+<div class="box is-flex" STYLE="display:block; width:50%; float:left">
+    <label class="label">Members</label>
+    <form action="{{url_for('.chat', room=room)}}" method='POST'>
+        <input type='hidden' name='remove' value='true'>
+        <select class="select is-medium" multiple name="users" size=5 STYLE="width: 600px; height: 200px ">
+            {% for i in users %}
+            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+            {% endfor %}
+            <br>
+        </select>
+        <input class="button is-primary" type='submit' value='Remove'>
+    </form>
+</div>
+<div class="box is-flex" STYLE="display: block; float: right; width: 50%">
+    <label class="label">Add Members</label>
+    <form action="{{url_for('.chat', room=room)}}" method='POST'>
+        <input type='hidden' name='add' value='true'>
+        <select class="select is-medium" multiple name="users" size=5 STYLE="width: 600px; height: 200px ">
+            {% for i in allusers %} {% if i not in users %}
+            <option value="{{ i }}" {% if loop.first %} SELECTED {% endif %}>{{ i }}</option>
+            {% endif %} {% endfor %}
+            <br>
+        </select>
+        <input class="button is-primary" type='submit' value='Add Members'>
+    </form>
+</div>
+<div STYLE="margin: 0 auto;">
+    <form action="{{url_for('.chat', room=room)}}" method='POST' onsubmit="return confirm('Are you sure?');">
+        <input type='hidden' name='delete' value='true'>
+        <input class="button is-danger" type='submit' value='Delete Room'>
+    </form>
+</div>
